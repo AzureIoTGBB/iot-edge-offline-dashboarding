@@ -1,0 +1,28 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - azure-pipepines.yml
+
+pr:
+  autoCancel: true
+
+variables:
+  registryName: jldemoacrdev
+  repository: offline-dashboarding/influxdb
+  version: $(Build.BuildNumber)
+  fullContainerPath: $(registryName).azurecr.io/$(repository):$(version)
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az acr login -n $(registryName)
+      docker build . -t $(fullContainerPath)
+      docker push $(fullContainerPath)
