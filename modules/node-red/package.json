@@ -1,0 +1,8 @@
+{
+    "description": "Custom npm packages for node red for the iotgbb offline dashboarding sample",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git"
+      },
+    "license": "MIT"
+}
