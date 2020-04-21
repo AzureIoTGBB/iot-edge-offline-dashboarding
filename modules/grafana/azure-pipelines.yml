@@ -6,12 +6,10 @@ trigger:
     include:
     - modules/grafana
 
-
 pr:
   autoCancel: true
 
 variables:
-  registryName: jldemoacrdev
   repository: offline-dashboarding/influxdb
   version: $(Build.BuildNumber)
   containerPath: $(registryName).azurecr.io/$(repository):$(version)
