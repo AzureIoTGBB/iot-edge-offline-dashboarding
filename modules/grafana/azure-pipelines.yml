@@ -17,6 +17,7 @@ variables:
 steps:
 - task: AzureCLI@2
   inputs:
+    workingDirectory: ./modules/grafana
     azureSubscription: $(azureSubscription)
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
