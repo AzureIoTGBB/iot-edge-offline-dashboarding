@@ -1,0 +1,50 @@
+[
+  {
+    "EndpointUrl": "opc.tcp://<your public IP address for 1st simulator>:53530/OPCUA/SimulationServer",
+    "UseSecurity": false,
+    "OpcNodes": [
+      {
+        "Id": "ns=3;s=STATUS",
+        "OpcSamplingInterval": 60000,
+        "OpcPublishingInterval": 60000,
+        "DisplayName": "STATUS"
+      },
+      {
+        "Id": "ns=3;s=ITEM_COUNT_GOOD",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "ITEM_COUNT_GOOD"
+      },
+      {
+        "Id": "ns=3;s=ITEM_COUNT_BAD",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "ITEM_COUNT_BAD"
+      }
+    ]
+  },
+  {
+    "EndpointUrl": "opc.tcp://<your public IP address for 2nd simulator>:53530/OPCUA/SimulationServer",
+    "UseSecurity": false,
+    "OpcNodes": [
+      {
+        "Id": "ns=3;s=STATUS",
+        "OpcSamplingInterval": 60000,
+        "OpcPublishingInterval": 60000,
+        "DisplayName": "STATUS"
+      },
+      {
+        "Id": "ns=3;s=ITEM_COUNT_GOOD",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "ITEM_COUNT_GOOD"
+      },
+      {
+        "Id": "ns=3;s=ITEM_COUNT_BAD",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "ITEM_COUNT_BAD"
+      }
+    ]
+  }
+]
