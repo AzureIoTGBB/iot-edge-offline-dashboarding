@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - modules/node-red
+    - modules/node-red/*
 
 pr:
   autoCancel: true
