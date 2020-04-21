@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - modules/influxdb
+    - modules/influxdb/*
 
 pr:
   autoCancel: true
