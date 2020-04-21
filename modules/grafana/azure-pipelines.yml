@@ -6,23 +6,24 @@ trigger:
     include:
     - modules/grafana
 
-variables:
-  registry: 
-  tag: '$(Build.BuildId)'
 
-stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/modules/grafana/Dockerfile'
-        tags: |
-          $(tag)
+pr:
+  autoCancel: true
+
+variables:
+  registryName: jldemoacrdev
+  repository: offline-dashboarding/influxdb
+  version: $(Build.BuildNumber)
+  containerPath: $(registryName).azurecr.io/$(repository):$(version)
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(azureSubscription)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      set -e -x
+      az acr login -n $(registryName)
+      docker build . -t $(containerPath)
+      docker push $(containerPath)
