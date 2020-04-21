@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - modules/grafana
+    - modules/grafana/*
 
 pr:
   autoCancel: true
