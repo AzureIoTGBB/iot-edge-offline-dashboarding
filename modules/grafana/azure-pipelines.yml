@@ -10,7 +10,7 @@ pr:
   autoCancel: true
 
 variables:
-  repository: offline-dashboarding/influxdb
+  repository: offline-dashboarding/grafana
   version: $(Build.BuildNumber)
   containerPath: $(registryName).azurecr.io/$(repository):$(version)
 
