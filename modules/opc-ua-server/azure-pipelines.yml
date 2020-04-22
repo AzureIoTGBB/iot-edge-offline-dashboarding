@@ -1,0 +1,28 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - modules/opc-ua-simulator/*
+
+pr:
+  autoCancel: true
+
+variables:
+  repository: offline-dashboarding/opc-ua-simulator
+  version: $(Build.BuildNumber)
+  containerPath: $(registryName).azurecr.io/$(repository):$(version)
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    workingDirectory: ./modules/opc-ua-simulator
+    azureSubscription: $(azureSubscription)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      set -e -x
+      az acr login -n $(registryName)
+      docker build . -t $(containerPath)
+      docker push $(containerPath)
