@@ -1,0 +1,24 @@
+{
+  "HostConfig": {
+    "Binds": [
+      "/opcuasim:/node-red"
+    ],
+    "PortBindings": {
+      "1880/tcp": [
+        {
+          "HostPort": "1881"
+        }
+      ],
+      "53880/tcp": [
+        {
+          "HostPort": "53880"
+        }
+      ],
+      "8086/tcp": [
+        {
+          "HostPort": "8087"
+        }
+      ]
+    }
+  }
+}
