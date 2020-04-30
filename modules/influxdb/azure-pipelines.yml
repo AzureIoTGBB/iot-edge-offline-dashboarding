@@ -14,7 +14,7 @@ jobs:
 - template: ../../templates/azure-pipelines-module-build.yml
   parameters:
     registryName: $(registryName)
-    imageName: influxdb
     repositoryName: offline-dashboarding
+    imageName: influxdb
     variableGroupName: edge-deployment-settings
     workingDirectory: ./modules/influxdb
