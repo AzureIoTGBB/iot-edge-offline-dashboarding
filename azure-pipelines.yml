@@ -21,7 +21,7 @@ resources:
   - pipeline: grafana
     source: Module - Grafana
   - pipeline: influxdb
-    source: Module - Influxdb
+    source: Module - InfluxDB
    
 stages:
 - stage: Build
