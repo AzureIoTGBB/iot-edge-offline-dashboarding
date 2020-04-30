@@ -39,7 +39,7 @@ steps:
       az pipelines variable-group variable update \
         --org "$(System.TeamFoundationCollectionUri)" \
         --project "$(System.TeamProject)" \
-        --group-id $GROUP_ID
+        --group-id $GROUP_ID \
         --name "INFLUXDB_TAG" \
         --value $(Build.BuildNumber)
 
