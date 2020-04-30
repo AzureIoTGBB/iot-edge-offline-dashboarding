@@ -13,8 +13,9 @@ pr:
 jobs:
 - template: ../../templates/azure-pipelines-module-build.yml
   parameters:
-    registryName: $(registryName)
+    registryName: $(CONTAINER_REGISTRY_NAME)
     repositoryName: offline-dashboarding
     imageName: opc-ua-server
     variableGroupName: edge-deployment-settings
     workingDirectory: ./modules/opc-ua-server
+    azureSubscription: $(azureSubscription)

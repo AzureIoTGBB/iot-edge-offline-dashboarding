@@ -11,9 +11,9 @@
             "loggingOptions": "",
             "registryCredentials": {
               "default": {
-                "username": "${CONTAINER_REGISTRY_USERNAME}",
+                "username": "${CONTAINER_REGISTRY_NAME}",
                 "password": "${CONTAINER_REGISTRY_PASSWORD}",
-                "address": "${CONTAINER_REGISTRY_ADDRESS}"
+                "address": "${CONTAINER_REGISTRY_NAME}.azurecr.io"
               }
             }
           }

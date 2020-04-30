@@ -13,8 +13,9 @@ pr:
 jobs:
 - template: ../../templates/azure-pipelines-module-build.yml
   parameters:
-    registryName: $(registryName)
+    registryName: $(CONTAINER_REGISTRY_NAME)
     repositoryName: offline-dashboarding
     imageName: node-red
     variableGroupName: edge-deployment-settings
     workingDirectory: ./modules/node-red
+    azureSubscription: $(azureSubscription)

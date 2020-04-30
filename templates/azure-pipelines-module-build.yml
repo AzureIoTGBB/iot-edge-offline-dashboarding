@@ -19,7 +19,7 @@ jobs:
   - task: AzureCLI@2
     inputs:
       workingDirectory: ${{ parameters.workingDirectory }}
-      azureSubscription: $(azureSubscription)
+      azureSubscription: ${{ parameters.azureSubscription }}
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
