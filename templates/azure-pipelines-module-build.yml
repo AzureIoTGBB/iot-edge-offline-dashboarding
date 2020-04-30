@@ -6,7 +6,9 @@ parameters:
   workingDirectory:
 
 jobs:
-- job: Build IoT Edge Module for Release
+- job: build
+  displayName: Build IoT Edge Module for Release
+  
   pool:
     vmImage: 'Ubuntu-16.04'
 
