@@ -23,6 +23,14 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       set -e -x
+
+      az pipelines variable-group list
+      az extension add --name azure-devops
+
+      az devops login --org
+
       az acr login -n $(registryName)
       docker build . -t $(containerPath)
       docker push $(containerPath)
+
+      
