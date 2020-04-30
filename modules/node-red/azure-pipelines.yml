@@ -5,24 +5,16 @@ trigger:
   paths:
     include:
     - modules/node-red/*
+    - templates/azure-pipelines-module-build.yml
 
 pr:
   autoCancel: true
 
-variables:
-  repository: offline-dashboarding/node-red
-  version: $(Build.BuildNumber)
-  containerPath: $(registryName).azurecr.io/$(repository):$(version)
-
-steps:
-- task: AzureCLI@2
-  inputs:
+jobs:
+- template: ../../templates/azure-pipelines-module-build.yml
+  parameters:
+    registryName: $(registryName)
+    repositoryName: offline-dashboarding
+    imageName: node-red
+    variableGroupName: edge-deployment-settings
     workingDirectory: ./modules/node-red
-    azureSubscription: $(azureSubscription)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      set -e -x
-      az acr login -n $(registryName)
-      docker build . -t $(containerPath)
-      docker push $(containerPath)
