@@ -53,6 +53,32 @@
               "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/influxdb:${INFLUXDB_TAG}",
               "createOptions": {}
             }
+          },
+          "grafana": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/grafana:${GRAFANA_TAG}",
+              "createOptions": {}
+            }
+          },
+          "node-red": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/node-red:${NODE_RED_TAG}",
+              "createOptions": {}
+            },
+            "opc-ua-server": {
+              "type": "docker",
+              "status": "running",
+              "restartPolicy": "always",
+              "settings": {
+                "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/opc-ua-server:${OPC_UA_SERVER_TAG}",
+                "createOptions": {}
+              }
           }
         }
       }
