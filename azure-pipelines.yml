@@ -19,6 +19,15 @@ variables:
   CONTAINER_REGISTRY_USERNAME: $(registryName)
   CONTAINER_REGISTRY_PASSWORD: 
 
+resources:         
+  containers:
+  - container: influxdb      
+    type: ACR  
+    azureSubscription: $(azureSubscription)
+    resourceGroup: $(registryResourceGroup)
+    registry: $(registryName)
+    repository: offline-dashboarding/influxdb
+
 stages:
 - stage: Build
   jobs:
@@ -35,14 +44,6 @@ stages:
         inlineScript: |
           PASSWORD=`az acr credential show -n jldemoacrdev --query passwords[1].value | tr -d '"'`
           echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]$PASSWORD"
-    - script: |
-        set -e -x
-        echo $INFLUXDB_TAG
-        echo $GRAFANA_TAG
-        echo $NODE_RED_TAG
-        echo $CONTAINER_REGISTRY_ADDRESS
-        echo $CONTAINER_REGISTRY_USERNAME
-        echo $CONTAINER_REGISTRY_PASSWORD
 
     # Generate our deployment manifest
     - task: AzureIoTEdge@2
@@ -71,7 +72,7 @@ stages:
       displayName: Create Deployment
       inputs:
         action: Deploy to IoT Edge devices
-        deploymentFilePath: $(System.DefaultWorkingDirectory)/config/deployment.json
+        deploymentFilePath: $(Pipeline.Workspace)/config/deployment.json
         azureSubscription: $(azureSubscription)
         iothubname: jl-demo-iot-dev
         deploymentid: offline-dashboard
