@@ -10,7 +10,7 @@ pr:
   autoCancel: true
 
 jobs:
-- template: ../templates/azure-pipelines-module-build
+- template: ../../templates/azure-pipelines-module-build
   parameters:
     registryName: $(registryName)
     imageName: influxdb
