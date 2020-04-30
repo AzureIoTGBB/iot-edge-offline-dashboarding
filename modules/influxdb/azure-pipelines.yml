@@ -23,7 +23,8 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       set -e -x
-
+      export AZURE_DEVOPS_EXT_PAT=$(System.AccessToken)
+      
       az pipelines variable-group list \
         --org "$(System.TeamFoundationCollectionUri)" \
         --project "$(System.TeamProject)"
