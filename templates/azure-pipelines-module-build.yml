@@ -5,13 +5,13 @@ parameters:
   variableGroupName:
   workingDirectory:
 
-variables:
-  containerPath: ${{ parameters.registryName }}.azurecr.io/${{ parameters.repositoryName }}/${{ parameters.imageName }}:$(version)
-
 jobs:
 - job: Build IoT Edge Module for Release
   pool:
     vmImage: 'Ubuntu-16.04'
+
+  variables:
+    containerPath: ${{ parameters.registryName }}.azurecr.io/${{ parameters.repositoryName }}/${{ parameters.imageName }}:$(version)
 
   steps:
   - task: AzureCLI@2
