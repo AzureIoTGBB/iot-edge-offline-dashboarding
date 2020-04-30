@@ -11,13 +11,7 @@ pr:
   autoCancel: true
 
 variables:
-  INFLUXDB_TAG: 20200421.15
-  GRAFANA_TAG: 20200429.1
-  NODE_RED_TAG: 20200429.1
-  OPC_UA_SERVER_TAG: 1.0.0
-  CONTAINER_REGISTRY_ADDRESS: $(registryName).azurecr.io
-  CONTAINER_REGISTRY_USERNAME: $(registryName)
-  CONTAINER_REGISTRY_PASSWORD: 
+  - group: edge-deployment-settings
 
 resources:         
   containers:
