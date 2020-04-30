@@ -10,19 +10,41 @@ trigger:
 pr:
   autoCancel: true
 
-variables:
-  registryName: jldemoacrdev
-  repository: offline-dashboarding/influxdb
-  version: $(Build.BuildNumber)
-  fullContainerPath: $(registryName).azurecr.io/$(repository):$(version)
-
 steps:
+
+# Set environment variables to be used by the Edge deployment manifest generattor
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)'
+    azureSubscription: $(azureSubscription)
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az acr login -n $(registryName)
-      docker build . -t $(fullContainerPath)
-      docker push $(fullContainerPath)
+      set -e -x
+      export INFLUXDB_TAG=20200421.15
+      export GRAFANA_TAG=20200429.1
+      export NODE_RED_TAG=20200429.1
+      export OPC_UA_SERVER_TAG=1.0.0
+      export CONTAINER_REGISTRY_ADDRESS=$(registryName).azurecr.io
+      export CONTAINER_REGISTRY_USERNAME=$(registryName)
+      export CONTAINER_REGISTRY_PASSWORD=`az acr credential show -n $(registryName) --query passwords[1].value`
+
+# Generate our deployment manifest
+- task: AzureIoTEdge@2
+  inputs:
+    action: 'Generate deployment manifest'
+    templateFilePath: 'deployment.template.json'
+    defaultPlatform: 'amd64'
+    deploymentManifestOutputPath: '$(System.DefaultWorkingDirectory)/config/deployment.json'
+    validateGeneratedDeploymentManifest: 'true'
+
+# Deploy to edge
+- task: AzureIoTEdge@2
+  inputs:
+    action: 'Deploy to IoT Edge devices'
+    deploymentFilePath: '$(System.DefaultWorkingDirectory)/config/deployment.json'
+    azureSubscription: $(azureSubscription)
+    iothubname: 'jl-demo-iot-dev'
+    deploymentid: 'offline-dashboard'
+    priority: '10'
+    deviceOption: 'Multiple Devices'
+    targetcondition: '*'
