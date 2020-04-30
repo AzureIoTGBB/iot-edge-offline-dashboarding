@@ -5,6 +5,7 @@ trigger:
   paths:
     include:
     - modules/influxdb/*
+    - templates/azure-pipelines-module-build.yml
 
 pr:
   autoCancel: true
