@@ -10,7 +10,6 @@ trigger:
 pr:
   autoCancel: true
 
-
 steps:
 
 # Set environment variables to be used by the Edge deployment manifest generattor
