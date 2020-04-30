@@ -13,15 +13,16 @@ pr:
 variables:
   - group: edge-deployment-settings
 
+# Trigger a deployment on any pipeline completion
 resources:         
-  containers:
-  - container: influxdb      
-    type: ACR  
-    azureSubscription: $(azureSubscription)
-    resourceGroup: $(registryResourceGroup)
-    registry: $(registryName)
-    repository: offline-dashboarding/influxdb
-
+  pipelines:
+  - pipeline: node_red
+    source: Module - Node-RED
+  - pipeline: grafana
+    source: Module - Grafana
+  - pipeline: influxdb
+    source: Module - Influxdb
+   
 stages:
 - stage: Build
   jobs:
