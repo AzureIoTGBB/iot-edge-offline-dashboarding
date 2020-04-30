@@ -13,7 +13,9 @@ jobs:
     vmImage: 'Ubuntu-16.04'
 
   variables:
-    containerPath: ${{ parameters.registryName }}.azurecr.io/${{ parameters.repositoryName }}/${{ parameters.imageName }}:$(Build.BuildNumber)
+  - group: ${{ parameters.variableGroupName }}
+  - name: containerPath
+    value: ${{ parameters.registryName }}.azurecr.io/${{ parameters.repositoryName }}/${{ parameters.imageName }}:$(Build.BuildNumber)
 
   steps:
   - task: AzureCLI@2
