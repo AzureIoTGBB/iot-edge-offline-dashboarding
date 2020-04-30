@@ -33,7 +33,8 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]`az acr credential show -n $(registryName) --query passwords[1].value`"
+          PASSWORD=`az acr credential show -n $(registryName) --query passwords[1].value`
+          echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]$PASSWORD"
 
     # Generate our deployment manifest
     - task: AzureIoTEdge@2
