@@ -25,8 +25,8 @@ steps:
       set -e -x
 
       az pipelines variable-group list \
-        --org $(System.TeamFoundationCollectionUri) \
-        --project $(System.TeamProject)
+        --org "$(System.TeamFoundationCollectionUri)" \
+        --project "$(System.TeamProject)"
 
       az acr login -n $(registryName)
       docker build . -t $(containerPath)
