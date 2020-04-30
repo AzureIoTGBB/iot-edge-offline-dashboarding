@@ -9,41 +9,11 @@ trigger:
 pr:
   autoCancel: true
 
-variables:
-  repository: offline-dashboarding/influxdb
-  version: $(Build.BuildNumber)
-  containerPath: $(registryName).azurecr.io/$(repository):$(version)
-
-steps:
-- task: AzureCLI@2
-  inputs:
+jobs:
+- template: ../templates/azure-pipelines-module-build
+  parameters:
+    registryName: $(registryName)
+    imageName: influxdb
+    repository: offline-dashboarding/influxdb
+    variableGroupName: edge-deployment-settings
     workingDirectory: ./modules/influxdb
-    azureSubscription: $(azureSubscription)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      set -e -x
-      
-      export AZURE_DEVOPS_EXT_PAT=$(System.AccessToken)
-      
-      az acr login -n $(registryName)
-      docker build . -t $(containerPath)
-      docker push $(containerPath)
-
-      GROUP_ID=`az pipelines variable-group list \
-        --org "$(System.TeamFoundationCollectionUri)" \
-        --project "$(System.TeamProject)" \
-        --group-name "edge-deployment-settings" \
-        --query [0].id`
-      
-      az pipelines variable-group variable update \
-        --org "$(System.TeamFoundationCollectionUri)" \
-        --project "$(System.TeamProject)" \
-        --group-id $GROUP_ID \
-        --name "INFLUXDB_TAG" \
-        --value $(Build.BuildNumber)
-
-
-
-
-      
