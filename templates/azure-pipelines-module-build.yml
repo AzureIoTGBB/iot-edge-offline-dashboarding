@@ -1,0 +1,52 @@
+parameters:
+  registryName:
+  imageName:
+  repositoryName:
+  variableGroupName:
+  workingDirectory:
+
+jobs:
+- job: build
+  displayName: Build IoT Edge Module for Release
+  
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  variables:
+  - group: ${{ parameters.variableGroupName }}
+  - name: containerPath
+    value: ${{ parameters.registryName }}.azurecr.io/${{ parameters.repositoryName }}/${{ parameters.imageName }}:$(Build.BuildNumber)
+
+  steps:
+  - task: AzureCLI@2
+    inputs:
+      workingDirectory: ${{ parameters.workingDirectory }}
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        # Ensure failure on errors, output commands
+        set -e -x
+        
+        # Login, build, and push the module
+        az acr login -n ${{ parameters.registryName }}
+        docker build . -t $(containerPath)
+        docker push $(containerPath)
+        
+        # Update the module reference in the Variable Group
+        export AZURE_DEVOPS_EXT_PAT=$(System.AccessToken)
+
+        az devops configure -d \
+            organization="$(System.TeamFoundationCollectionUri)" \
+            project="$(System.TeamProject)"
+
+        VARIABLE_GROUP_ID=`az pipelines variable-group list \
+            --group-name "${{ parameters.variableGroupName }}" \
+            --query [0].id`
+
+        VARIBLE_NAME=`echo ${{ parameters.imageName }}_tag | tr a-z A-Z | tr '-' '_'`
+        
+        az pipelines variable-group variable update \
+            --group-id $VARIABLE_GROUP_ID \
+            --name $VARIBLE_NAME \
+            --value $(Build.BuildNumber)
