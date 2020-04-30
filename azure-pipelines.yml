@@ -33,7 +33,7 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          PASSWORD=`az acr credential show -n $(registryName) --query passwords[1].value`
+          PASSWORD=`az acr credential show -n jldemoacrdev --query passwords[1].value | tr -d '"'`
           echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]$PASSWORD"
     - script: |
         set -e -x
