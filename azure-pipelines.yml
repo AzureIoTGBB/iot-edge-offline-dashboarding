@@ -5,7 +5,7 @@ trigger:
     - master
   paths:
     include:
-    - azure-pipepines.yml
+    - ./azure-pipepines.yml
 
 pr:
   autoCancel: true
