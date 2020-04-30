@@ -70,15 +70,16 @@
             "settings": {
               "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/node-red:${NODE_RED_TAG}",
               "createOptions": {}
-            },
-            "opc-ua-server": {
-              "type": "docker",
-              "status": "running",
-              "restartPolicy": "always",
-              "settings": {
-                "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/opc-ua-server:${OPC_UA_SERVER_TAG}",
-                "createOptions": {}
-              }
+            }
+          },
+          "opc-ua-server": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/opc-ua-server:${OPC_UA_SERVER_TAG}",
+              "createOptions": {}
+            }
           }
         }
       }
