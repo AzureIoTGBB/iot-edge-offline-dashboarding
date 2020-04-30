@@ -19,37 +19,53 @@ variables:
   CONTAINER_REGISTRY_USERNAME: $(registryName)
   CONTAINER_REGISTRY_PASSWORD: 
 
-steps:
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
 
-# Set environment variables to be used by the Edge deployment manifest generattor
-- task: AzureCLI@2
-  displayName: Export configuration
-  inputs:
-    azureSubscription: $(azureSubscription)
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]`az acr credential show -n $(registryName) --query passwords[1].value`"
+    # Set environment variables to be used by the Edge deployment manifest generattor
+    - task: AzureCLI@2
+      displayName: Export configuration
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]`az acr credential show -n $(registryName) --query passwords[1].value`"
 
-# Generate our deployment manifest
-- task: AzureIoTEdge@2
-  displayName: Generate deployment manifest
-  inputs:
-    action: Generate deployment manifest
-    templateFilePath: deployment.template.json
-    defaultPlatform: 'amd64'
-    deploymentManifestOutputPath: $(System.DefaultWorkingDirectory)/config/deployment.json
-    validateGeneratedDeploymentManifest: 'true'
+    # Generate our deployment manifest
+    - task: AzureIoTEdge@2
+      displayName: Generate deployment manifest
+      inputs:
+        action: Generate deployment manifest
+        templateFilePath: deployment.template.json
+        defaultPlatform: 'amd64'
+        deploymentManifestOutputPath: $(Build.ArtifactStagingDirectory)/deployment.json
+        validateGeneratedDeploymentManifest: 'true'
 
-# Deploy to edge
-- task: AzureIoTEdge@2
-  displayName: Create Deployment
-  inputs:
-    action: Deploy to IoT Edge devices
-    deploymentFilePath: $(System.DefaultWorkingDirectory)/config/deployment.json
-    azureSubscription: $(azureSubscription)
-    iothubname: jl-demo-iot-dev
-    deploymentid: offline-dashboard
-    priority: '10'
-    deviceOption: Multiple Devices
-    targetcondition: '*'
+    # Publish deployment manifest as a pipeline artifact
+    - publish: $(Build.ArtifactStagingDirectory)
+      artifact: config
+
+- stage: Release
+  jobs:
+  - job: Release
+    steps:
+    # Download deployment manifest from build stage
+    - download: current
+      artifact: config
+
+    # Deploy to edge
+    - task: AzureIoTEdge@2
+      displayName: Create Deployment
+      inputs:
+        action: Deploy to IoT Edge devices
+        deploymentFilePath: $(System.DefaultWorkingDirectory)/config/deployment.json
+        azureSubscription: $(azureSubscription)
+        iothubname: jl-demo-iot-dev
+        deploymentid: offline-dashboard
+        priority: '10'
+        deviceOption: Multiple Devices
+        targetcondition: '*'
