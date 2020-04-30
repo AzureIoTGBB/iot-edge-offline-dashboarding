@@ -10,6 +10,15 @@ trigger:
 pr:
   autoCancel: true
 
+variables:
+  INFLUXDB_TAG: 20200421.15
+  GRAFANA_TAG: 20200429.1
+  NODE_RED_TAG: 20200429.1
+  OPC_UA_SERVER_TAG: 1.0.0
+  CONTAINER_REGISTRY_ADDRESS: $(registryName).azurecr.io
+  CONTAINER_REGISTRY_USERNAME: $(registryName)
+  CONTAINER_REGISTRY_PASSWORD: 
+
 steps:
 
 # Set environment variables to be used by the Edge deployment manifest generattor
@@ -20,13 +29,7 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      export INFLUXDB_TAG=20200421.15
-      export GRAFANA_TAG=20200429.1
-      export NODE_RED_TAG=20200429.1
-      export OPC_UA_SERVER_TAG=1.0.0
-      export CONTAINER_REGISTRY_ADDRESS=$(registryName).azurecr.io
-      export CONTAINER_REGISTRY_USERNAME=$(registryName)
-      export CONTAINER_REGISTRY_PASSWORD=`az acr credential show -n $(registryName) --query passwords[1].value`
+      echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]`az acr credential show -n $(registryName) --query passwords[1].value`"
 
 # Generate our deployment manifest
 - task: AzureIoTEdge@2
