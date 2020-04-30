@@ -42,7 +42,7 @@ jobs:
             --group-name "${{ parameters.variableGroupName }}" \
             --query [0].id`
 
-        VARIBLE_NAME=`echo ${{ parameters.imageName }}_tag | tr a-z A-Z`
+        VARIBLE_NAME=`echo ${{ parameters.imageName }}_tag | tr a-z A-Z | tr '-' '_'`
         
         az pipelines variable-group variable update \
             --group-id $VARIABLE_GROUP_ID \

@@ -17,11 +17,29 @@ variables:
 resources:         
   pipelines:
   - pipeline: node_red
-    source: Module - Node-RED
+    source: module-node-red
+    trigger: 
+      branches:
+        include: 
+        - master
   - pipeline: grafana
-    source: Module - Grafana
+    source: module-grafana
+    trigger: 
+      branches:
+        include: 
+        - master
   - pipeline: influxdb
-    source: Module - InfluxDB
+    source: module-influxdb
+    trigger: 
+      branches:
+        include: 
+        - master
+  - pipeline: opcuaserver
+    source: module-opc-ua-server
+    trigger: 
+      branches:
+        include: 
+        - master
    
 stages:
 - stage: Build
