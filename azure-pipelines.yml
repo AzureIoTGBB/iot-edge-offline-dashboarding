@@ -29,18 +29,7 @@ stages:
   - job: Build
     steps:
 
-    # Set environment variables to be used by the Edge deployment manifest generattor
-    - task: AzureCLI@2
-      displayName: Export configuration
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          PASSWORD=`az acr credential show -n jldemoacrdev --query passwords[1].value | tr -d '"'`
-          echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]$PASSWORD"
-
-    # Generate our deployment manifest
+    # Generate the deployment manifest
     - task: AzureIoTEdge@2
       displayName: Generate deployment manifest
       inputs:
@@ -50,7 +39,7 @@ stages:
         deploymentManifestOutputPath: $(Build.ArtifactStagingDirectory)/deployment.json
         validateGeneratedDeploymentManifest: 'true'
 
-    # Publish deployment manifest as a pipeline artifact
+    # Publish the deployment manifest as a pipeline artifact
     - publish: $(Build.ArtifactStagingDirectory)
       artifact: config
 
