@@ -10,17 +10,17 @@ jobs:
   pool:
     vmImage: 'Ubuntu-16.04'
 
-variables:
+  variables:
   containerPath: ${{ parameters.registryName }}.azurecr.io/${{ parameters.repositoryName }}/${{ parameters.imageName }}:$(version)
 
-steps:
-- task: AzureCLI@2
+  steps:
+  - task: AzureCLI@2
   inputs:
-    workingDirectory: ${{ parameters.workingDirectory }}
-    azureSubscription: $(azureSubscription)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
+      workingDirectory: ${{ parameters.workingDirectory }}
+      azureSubscription: $(azureSubscription)
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
       # Ensure failure on errors, output commands
       set -e -x
       
@@ -33,16 +33,16 @@ steps:
       export AZURE_DEVOPS_EXT_PAT=$(System.AccessToken)
 
       az devops configure -d \
-        organization="$(System.TeamFoundationCollectionUri)" \
-        project="$(System.TeamProject)"
+          organization="$(System.TeamFoundationCollectionUri)" \
+          project="$(System.TeamProject)"
 
       VARIABLE_GROUP_ID=`az pipelines variable-group list \
-        --group-name "${{ parameters.variableGroupName }}" \
-        --query [0].id`
+          --group-name "${{ parameters.variableGroupName }}" \
+          --query [0].id`
 
       VARIBLE_NAME=`echo ${{ parameters.imageName }}_tag | tr a-z A-Z`
       
       az pipelines variable-group variable update \
-        --group-id $VARIABLE_GROUP_ID \
-        --name $VARIBLE_NAME \
-        --value $(Build.BuildNumber)
+          --group-id $VARIABLE_GROUP_ID \
+          --name $VARIBLE_NAME \
+          --value $(Build.BuildNumber)
