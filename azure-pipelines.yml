@@ -37,7 +37,12 @@ stages:
           echo "##vso[task.setvariable variable=CONTAINER_REGISTRY_PASSWORD]$PASSWORD"
     - script: |
         set -e -x
-        env
+        echo $INFLUXDB_TAG
+        echo $GRAFANA_TAG
+        echo $NODE_RED_TAG
+        echo $CONTAINER_REGISTRY_ADDRESS
+        echo $CONTAINER_REGISTRY_USERNAME
+        echo $CONTAINER_REGISTRY_PASSWORD
 
     # Generate our deployment manifest
     - task: AzureIoTEdge@2
