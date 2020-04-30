@@ -23,14 +23,27 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       set -e -x
+      
       export AZURE_DEVOPS_EXT_PAT=$(System.AccessToken)
       
-      az pipelines variable-group list \
-        --org "$(System.TeamFoundationCollectionUri)" \
-        --project "$(System.TeamProject)"
-
       az acr login -n $(registryName)
       docker build . -t $(containerPath)
       docker push $(containerPath)
+
+      GROUP_ID= `az pipelines variable-group update \
+        --org "$(System.TeamFoundationCollectionUri)" \
+        --project "$(System.TeamProject)" \
+        --name "edge-deployment-settings" \
+        --query [0].id`
+      
+      az pipelines variable-group variable update \
+        --org "$(System.TeamFoundationCollectionUri)" \
+        --project "$(System.TeamProject)" \
+        --group-id $GROUP_ID
+        --name "INFLUXDB_TAG" \
+        --value $(Build.BuildNumber)
+
+
+
 
       
