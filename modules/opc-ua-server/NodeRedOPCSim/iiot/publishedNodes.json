@@ -1,6 +1,30 @@
 [
   {
-    "EndpointUrl": "opc.tcp://10.0.0.4:53880/UA/SimpleNodeRedServer",
+    "EndpointUrl": "opc.tcp://10.0.0.4:54845/OPCUA/Site1",
+    "UseSecurity": false,
+    "OpcNodes": [
+      {
+        "Id": "ns=1;s=STATUS",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "STATUS"
+      },
+      {
+        "Id": "ns=1;s=ITEM_COUNT_GOOD",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "ITEM_COUNT_GOOD"
+      },
+      {
+        "Id": "ns=1;s=ITEM_COUNT_BAD",
+        "OpcSamplingInterval": 1000,
+        "OpcPublishingInterval": 5000,
+        "DisplayName": "ITEM_COUNT_BAD"
+      }
+    ]
+  },
+  {
+    "EndpointUrl": "opc.tcp://10.0.0.4:54855/OPCUA/Site2",
     "UseSecurity": false,
     "OpcNodes": [
       {

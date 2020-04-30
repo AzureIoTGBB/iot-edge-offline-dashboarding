@@ -1,24 +1,26 @@
 {
+  "NetworkingConfig": {
+      "EndpointsConfig": {
+          "host": {}
+      }
+  },
   "HostConfig": {
-    "Binds": [
-      "/opcuasim:/node-red"
-    ],
-    "PortBindings": {
-      "1880/tcp": [
-        {
-          "HostPort": "1881"
-        }
+      "Privileged": true,
+      "NetworkMode": "host",
+      "Binds": [
+          "/iiotnodered:/node-red"
       ],
-      "53880/tcp": [
-        {
-          "HostPort": "53880"
-        }
-      ],
-      "8086/tcp": [
-        {
-          "HostPort": "8087"
-        }
-      ]
-    }
+      "PortBindings": {
+          "1880/tcp": [
+              {
+                  "HostPort": "1880"
+              }
+          ],
+          "8086/tcp": [
+              {
+                  "HostPort": "8086"
+              }
+          ]
+      }
   }
 }
