@@ -10,16 +10,17 @@ trigger:
 pr:
   autoCancel: true
 
+
 steps:
 
 # Set environment variables to be used by the Edge deployment manifest generattor
 - task: AzureCLI@2
+  displayName: Export configuration
   inputs:
     azureSubscription: $(azureSubscription)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
+    scriptType: bash
+    scriptLocation: inlineScript
     inlineScript: |
-      set -e -x
       export INFLUXDB_TAG=20200421.15
       export GRAFANA_TAG=20200429.1
       export NODE_RED_TAG=20200429.1
@@ -30,21 +31,23 @@ steps:
 
 # Generate our deployment manifest
 - task: AzureIoTEdge@2
+  displayName: Generate deployment manifest
   inputs:
-    action: 'Generate deployment manifest'
-    templateFilePath: 'deployment.template.json'
+    action: Generate deployment manifest
+    templateFilePath: deployment.template.json
     defaultPlatform: 'amd64'
-    deploymentManifestOutputPath: '$(System.DefaultWorkingDirectory)/config/deployment.json'
+    deploymentManifestOutputPath: $(System.DefaultWorkingDirectory)/config/deployment.json
     validateGeneratedDeploymentManifest: 'true'
 
 # Deploy to edge
 - task: AzureIoTEdge@2
+  displayName: Create Deployment
   inputs:
-    action: 'Deploy to IoT Edge devices'
-    deploymentFilePath: '$(System.DefaultWorkingDirectory)/config/deployment.json'
+    action: Deploy to IoT Edge devices
+    deploymentFilePath: $(System.DefaultWorkingDirectory)/config/deployment.json
     azureSubscription: $(azureSubscription)
-    iothubname: 'jl-demo-iot-dev'
-    deploymentid: 'offline-dashboard'
+    iothubname: jl-demo-iot-dev
+    deploymentid: offline-dashboard
     priority: '10'
-    deviceOption: 'Multiple Devices'
+    deviceOption: Multiple Devices
     targetcondition: '*'
