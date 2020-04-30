@@ -15,6 +15,6 @@ jobs:
   parameters:
     registryName: $(registryName)
     imageName: influxdb
-    repositoryName: offline-dashboarding/influxdb
+    repositoryName: offline-dashboarding
     variableGroupName: edge-deployment-settings
     workingDirectory: ./modules/influxdb
