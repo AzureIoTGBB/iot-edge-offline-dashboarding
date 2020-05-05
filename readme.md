@@ -13,11 +13,11 @@ The architecture for this solution is composed of the following components:
 
 For information on other potential "Dashboarding on the Edge" use cases, why this architecture was chosen, discussion of alternatives, please see [background](/docs/background.md).
 
-This architecture and its components are intended to be general purpose and apply across a number of industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore the reference implementation below focuses on that use case.
+This architecture and its components are intended to be general purpose and apply across a number of industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore the sample implementation below focuses on that use case.
 
 ## About the sample
 
-This sample implementation below leverages data from an OPC-UA device.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including modbus, MQTT, or other custom protocols.  
+This sample implementation leverages data from an OPC-UA device.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including modbus, MQTT, or other custom protocols.  
 
 ## Business Need
 
@@ -27,7 +27,7 @@ Azure Industrial IoT provides hybrid-cloud based components to build the end to 
 
 Most manufacturers start their journey by providing visibility across machines, processes, lines, factories through their unified industrial IoT platform. This is achieved by collecting data from manufacturing processes to provide end to end visibility.
 
-Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning engineers monitoring and fine-tuning production phases.
+Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning or engineers monitoring and fine-tuning production phases.
 
 Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communications to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communications to cloud is broken and sent to the industrial IoT platform when facility is restored. But how can users access real time information in the meanwhile?
 
