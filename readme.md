@@ -163,6 +163,43 @@ Tags
 
 Note that STATUS values are preserved as they come from the OPC Server. We map these values to determine if machine is running with influx queries.
 
+### Dashboard: Site Level Performance
+
+Sie Level Performance dashboard displays key manufacturing KPIs (OEE, Availability, Quality, Performance) per site. 
+
+![dashboard](docs/dashboard.png)
+
+**Site** is basically defined as the OPC server that provides data and uses OPC Server's Application URI as the site name (Source). See Node Red module code for algorithm producing Application URI. In the sample application we have two different sites that corresponding to two OPC Simulators
+
+![sitecombo](docs/sitecombo.png)
+
+**Ideal run rate** is the ideal capacity of production for the equipment. It is used to calculate Performance KPI. See definition for Performance KPI for the calculation method.
+
+![idealrunrate](docs/idealrunrate.png)
+
+Each row in the dashboard represents a KPI. The gauge on the left hand side gives calculation of KPI as per the time window selected. In the example screenshot above, selected time window is "Last 12 hours". Therefore the left top gauge for OEE KPI says that OEE value is at 54.23% for the last 12 hours.
+
+![timeinterval](docs/timeinterval.png)
+
+Normally operators would like to monitor KPIs for their current shift. To do that the operator has to set start of time period as start of their shift and leave end of time period as "now()", as shown in the snapshot below
+
+![timeinterval2](docs/timeinterval2.png)
+
+To make it easier, line graphs on the right column has vertical lines on 12:00AM, 08:00AM and 04:00PM to indicate working shift changes in our fictional facility.
+
+Following table depicts details of each element in the dashboard
+
+| Dashboard Element                                            |                           Snapshot                           |
+| ------------------------------------------------------------ | :----------------------------------------------------------: |
+| OEE gauge shows OEE KPI for the time period selected.        | ![OOEgauge](docs/OEEgauge.png) |
+| OEE graph shows OEE value change across time period selected. Minimum, Maximum, Average values of OEE across time period are provided in the legend. | ![oeegraph](docs/oeegraph.png) |
+| Availability gauge shows Availability KPI for the time period selected. | ![availabilitygauge](docs/availabilitygauge.png) |
+| Availability graph shows Availability value change across time period selected. Minimum, Maximum, Average values of Availability across time period are provided in the legend. The blue line indicates when machine was actually running. | ![availabilitygraph](docs/availabilitygraph.png) |
+| Quality gauge shows Quality KPI for the time period selected. | ![qualitygauge](docs/qualitygauge.png) |
+| Quality graph shows Quality value change across time period selected on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured, as green line) as well as "Bad Items" produced (items that are discarded, as red line) aligned to right axis. Contrary to Quality KPI "Good Items"  and "Bad Items" are aggregated at the minute level and their unit is number of items/min. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. | ![qualitygraph](docs/qualitygraph.png) |
+| Performance gauge shows Performance KPI for the time period selected. | ![performancegauge](docs/performancegauge.png) |
+| Performance graph shows Performance value change across time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. | ![performancegraph](docs/performancegraph.png) |
+
 ## Component Configuration
 
 Each of the components in the solution are driven by configuration files contained in and deployed via their corresponding Docker images. As seen later in the module deployment, we use an Azure DevOps pipeline to automate creation of the Docker images and inclusion of the correct configuration files for each solution component.  This allows you to update the dashboard, for example, by updating the corresponding dashboard configuration file and executing the pipeline.
