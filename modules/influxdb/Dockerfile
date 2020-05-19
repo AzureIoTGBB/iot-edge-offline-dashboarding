@@ -1,5 +1,12 @@
-# Start with upstream influxdb
-FROM influxdb:1.8.0
+# start with standard public influx image
+FROM influxdb
 
-# Copy in our config
+# copy in our database initialization script
+# creates telemetry database and sets retention policy
+COPY initdb.iql /docker-entrypoint-initdb.d/init.iql
+
+# copy in our config
 COPY influxdb.conf /etc/influxdb/influxdb.conf
+
+# launch influx daemon
+CMD ["influxd"]
