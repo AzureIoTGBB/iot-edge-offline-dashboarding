@@ -809,7 +809,7 @@
             "value": "urn:edgevm3.internal.cloudapp.net:OPC-Site-01"
           },
           "datasource": "Flux (InfluxDB) [BETA]",
-          "definition": "from(bucket: \"telemetry\")\n  |> range($range)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n\n|> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
+          "definition": "from(bucket: \"telemetry\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n\n|> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
           "hide": 0,
           "includeAll": false,
           "index": -1,
@@ -817,7 +817,7 @@
           "multi": false,
           "name": "Source",
           "options": [],
-          "query": "from(bucket: \"telemetry\")\n  |> range($range)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n\n|> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
+          "query": "from(bucket: \"telemetry\")\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n\n|> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
           "refresh": 2,
           "regex": "",
           "skipUrlSync": false,
