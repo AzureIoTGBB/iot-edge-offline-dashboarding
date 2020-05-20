@@ -133,11 +133,11 @@ STATUS indicates the current status of device that OPC server is connected to.  
 * STATUS Values 102,104,106,107,109 mean machine is not running
 * Random number generator ensures machine will be in RUNNING state (i.e STATUS 101,105,108) 90% of the time
 
-#### Data Point: ITEM_COUNT-GOOD
+#### Data Point: ITEM_COUNT_GOOD
 
 ITEM_COUNT_GOOD indicates number of good items (products that pass quality) produced by the machine since the last data point. It is a random whole number between 80-120. Simulators generate item counts every 5 secs. This could be taken in any unit that you wish but we will regard it as "number of items" in this example.
 
-#### Data Point: ITEM_COUNT-BAD
+#### Data Point: ITEM_COUNT_BAD
 
 ITEM_COUNT_BAD indicates number of bad items (ITEMS_DISCARDED) produced by the machine since the last data point. It is a random whole number between 0-10. Simulators generate item counts every 5 secs. This could be taken in any unit that you wish but we will regard it as "number of items" in this example.
 
