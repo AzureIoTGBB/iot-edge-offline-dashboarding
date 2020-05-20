@@ -1,1 +1,171 @@
-[{"id":"a1cd98e4.e9ed18","type":"tab","label":"flowOPCToInflux","disabled":false,"info":""},{"id":"90f6d0c.53b923","type":"moduleclient","z":""},{"id":"c0a47ecc.b1bd4","type":"influxdb","z":"","hostname":"127.0.0.1","port":"8086","protocol":"http","database":"telemetry","name":"","usetls":false,"tls":""},{"id":"2d52392b.d6f636","type":"moduleclient","z":""},{"id":"d487b04.a1f095","type":"influxdb","z":"","hostname":"127.0.0.1","port":"8086","protocol":"http","database":"telemetry","name":"","usetls":false,"tls":""},{"id":"22a2c45.5ed293c","type":"moduleinput","z":"a1cd98e4.e9ed18","client":"2d52392b.d6f636","input":"input1","x":150,"y":240,"wires":[["8afca10.928626","7f142d2d.474494"]]},{"id":"8afca10.928626","type":"json","z":"a1cd98e4.e9ed18","name":"Covert to JSON","property":"payload","action":"obj","pretty":false,"x":380,"y":240,"wires":[["ed6d59de.312468"]]},{"id":"6783c1a.f545e4","type":"change","z":"a1cd98e4.e9ed18","name":"","rules":[{"t":"delete","p":"payload.ContentMask","pt":"msg"},{"t":"delete","p":"payload.Value","pt":"msg"},{"t":"move","p":"payload.Value_","pt":"msg","to":"payload.Value","tot":"msg"},{"t":"delete","p":"payload.StatusCode","pt":"msg"},{"t":"delete","p":"payload.Status","pt":"msg"},{"t":"delete","p":"payload.ApplicationUri","pt":"msg"},{"t":"delete","p":"payload.Value_Type","pt":"msg"}],"action":"","property":"","from":"","to":"","reg":false,"x":560,"y":780,"wires":[[]]},{"id":"41a2c16.97a0a4","type":"influxdb batch","z":"a1cd98e4.e9ed18","influxdb":"d487b04.a1f095","precision":"","retentionPolicy":"","name":"Write to Telemetry DB","x":780,"y":240,"wires":[]},{"id":"ed6d59de.312468","type":"function","z":"a1cd98e4.e9ed18","name":"Build JSON","func":"//type checking\nvar getType = function (elem) {\n    return Object.prototype.toString.call(elem).slice(8, -1);\n};\n\nfunction appendLeadingZeroes(n,digits){\n  var s=\"\";\n  var start;\n  if(n <= 9){\n    start=1;\n  }\n  else if(n > 9 && n<= 99){\n    start=2;\n  }\n  else if(n > 99){\n    start=3;\n  }\n  \n  for (i=start;i<digits;i++)\n  {\n    s = s + \"0\";   \n  }\n  return s + n;\n}\n\nfunction formatDate(d){\nreturn  d.getFullYear() + \"-\" + \n        appendLeadingZeroes(d.getMonth() + 1,2) + \"-\" + \n        appendLeadingZeroes(d.getDate(),2) + \" \" + \n        appendLeadingZeroes(d.getHours(),2) + \":\" + \n        appendLeadingZeroes(d.getMinutes(),2) + \":\" + \n        appendLeadingZeroes(d.getSeconds(),2) + \".\" + \n        appendLeadingZeroes(d.getMilliseconds(),3);\n}\n\n//process a single data point instance\nvar processNode = function (rnode) {\n\nvar tmpStr;    \n    \nif (getType(rnode.Value) === 'Object')\n{\n    if (rnode.Value.SourceTimestamp !== undefined)\n    {\n        if(isNaN(new Date(rnode.Value.SourceTimestamp).getTime()))\n             {rnode.Timestamp = new Date().toString(); }\n        else {rnode.Timestamp=rnode.Value.SourceTimestamp;}\n    }\n    \n    if (rnode.Value.Body !== undefined)\n    {\n        rnode.Value=rnode.Value.Body;\n    }\n    else if (rnode.Value.Value !== undefined)\n    {\n        rnode.Value=rnode.Value.Value;\n    }\n}\n\n//make sure correct display name\nif (rnode.DisplayName === null || rnode.DisplayName === undefined || rnode.DisplayName === '')\n{\n    tmpStr = rnode.NodeId.split(\"=\");\n    rnode.DisplayName=tmpStr[tmpStr.length-1];\n}\n\n\nif (rnode.DisplayName.indexOf(\"=\")>=0)\n{\n    tmpStr = rnode.DisplayName.split(\"=\");\n    rnode.DisplayName=tmpStr[tmpStr.length-1];\n}\n\nif (rnode.ApplicationUri === null || rnode.ApplicationUri === undefined || rnode.ApplicationUri === '')\n{\n    tmpStr = rnode.NodeId.split(\"=\");\n    if(tmpStr[0].length>2){rnode.ApplicationUri=tmpStr[0].substring(0,tmpStr[0].length-2);}\n        else {rnode.ApplicationUri=tmpStr[0];}\n}\n\n//make sure timestamp property exists\nif (rnode.Timestamp === undefined){\n    rnode.Timestamp = new Date().toString();     \n}\n\n\nrnode.time = new Date(rnode.Timestamp).getTime()*1000000;\n\nvar new_payload = \n    {\n        measurement: \"DeviceData\",\n        fields: {\n            //Value: rnode.Value\n        },\n        tags:{\n            //NodeId: rnode.NodeId,\n            //DataPoint: rnode.DisplayName,\n            Source: rnode.ApplicationUri,\n            //EventTime: formatDate(new Date(rnode.Timestamp))\n        },\n        timestamp: rnode.time\n    }\n;\n\n//new_payload.measurement = rnode.DisplayName;\nnew_payload.fields[rnode.DisplayName]=rnode.Value;\nreturn new_payload;\n}\n\n\n\n//main\nif (getType(msg.payload) === 'Array'){\n    for (index = 0; index < msg.payload.length; index++) { \n        msg.payload[index] = processNode(msg.payload[index]); \n    }\n} \nelse\n{\n    var newnode = processNode(msg.payload);\n    msg.payload = new Array(newnode);\n}\nreturn msg;\n\n","outputs":1,"noerr":0,"x":570,"y":240,"wires":[["41a2c16.97a0a4"]]},{"id":"7f142d2d.474494","type":"debug","z":"a1cd98e4.e9ed18","name":"","active":false,"tosidebar":true,"console":false,"tostatus":false,"complete":"false","x":340,"y":460,"wires":[]}]
+[
+    {
+        "id": "a1cd98e4.e9ed18",
+        "type": "tab",
+        "label": "flowOPCToInflux",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "90f6d0c.53b923",
+        "type": "moduleclient",
+        "z": ""
+    },
+    {
+        "id": "c0a47ecc.b1bd4",
+        "type": "influxdb",
+        "z": "",
+        "hostname": "influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "telemetry",
+        "name": "",
+        "usetls": false,
+        "tls": ""
+    },
+    {
+        "id": "2d52392b.d6f636",
+        "type": "moduleclient",
+        "z": ""
+    },
+    {
+        "id": "d487b04.a1f095",
+        "type": "influxdb",
+        "z": "",
+        "hostname": "influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "telemetry",
+        "name": "",
+        "usetls": false,
+        "tls": ""
+    },
+    {
+        "id": "22a2c45.5ed293c",
+        "type": "moduleinput",
+        "z": "a1cd98e4.e9ed18",
+        "client": "2d52392b.d6f636",
+        "input": "input1",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "8afca10.928626",
+                "7f142d2d.474494"
+            ]
+        ]
+    },
+    {
+        "id": "8afca10.928626",
+        "type": "json",
+        "z": "a1cd98e4.e9ed18",
+        "name": "Covert to JSON",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 380,
+        "y": 240,
+        "wires": [
+            [
+                "ed6d59de.312468"
+            ]
+        ]
+    },
+    {
+        "id": "6783c1a.f545e4",
+        "type": "change",
+        "z": "a1cd98e4.e9ed18",
+        "name": "",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "payload.ContentMask",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "payload.Value",
+                "pt": "msg"
+            },
+            {
+                "t": "move",
+                "p": "payload.Value_",
+                "pt": "msg",
+                "to": "payload.Value",
+                "tot": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "payload.StatusCode",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "payload.Status",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "payload.ApplicationUri",
+                "pt": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "payload.Value_Type",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "41a2c16.97a0a4",
+        "type": "influxdb batch",
+        "z": "a1cd98e4.e9ed18",
+        "influxdb": "d487b04.a1f095",
+        "precision": "",
+        "retentionPolicy": "",
+        "name": "Write to Telemetry DB",
+        "x": 780,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "ed6d59de.312468",
+        "type": "function",
+        "z": "a1cd98e4.e9ed18",
+        "name": "Build JSON",
+        "func": "//type checking\nvar getType = function (elem) {\n    return Object.prototype.toString.call(elem).slice(8, -1);\n};\n\nfunction appendLeadingZeroes(n,digits){\n  var s=\"\";\n  var start;\n  if(n <= 9){\n    start=1;\n  }\n  else if(n > 9 && n<= 99){\n    start=2;\n  }\n  else if(n > 99){\n    start=3;\n  }\n  \n  for (i=start;i<digits;i++)\n  {\n    s = s + \"0\";   \n  }\n  return s + n;\n}\n\nfunction formatDate(d){\nreturn  d.getFullYear() + \"-\" + \n        appendLeadingZeroes(d.getMonth() + 1,2) + \"-\" + \n        appendLeadingZeroes(d.getDate(),2) + \" \" + \n        appendLeadingZeroes(d.getHours(),2) + \":\" + \n        appendLeadingZeroes(d.getMinutes(),2) + \":\" + \n        appendLeadingZeroes(d.getSeconds(),2) + \".\" + \n        appendLeadingZeroes(d.getMilliseconds(),3);\n}\n\n//process a single data point instance\nvar processNode = function (rnode) {\n\nvar tmpStr;    \n    \nif (getType(rnode.Value) === 'Object')\n{\n    if (rnode.Value.SourceTimestamp !== undefined)\n    {\n        if(isNaN(new Date(rnode.Value.SourceTimestamp).getTime()))\n             {rnode.Timestamp = new Date().toString(); }\n        else {rnode.Timestamp=rnode.Value.SourceTimestamp;}\n    }\n    \n    if (rnode.Value.Body !== undefined)\n    {\n        rnode.Value=rnode.Value.Body;\n    }\n    else if (rnode.Value.Value !== undefined)\n    {\n        rnode.Value=rnode.Value.Value;\n    }\n}\n\n//make sure correct display name\nif (rnode.DisplayName === null || rnode.DisplayName === undefined || rnode.DisplayName === '')\n{\n    tmpStr = rnode.NodeId.split(\"=\");\n    rnode.DisplayName=tmpStr[tmpStr.length-1];\n}\n\n\nif (rnode.DisplayName.indexOf(\"=\")>=0)\n{\n    tmpStr = rnode.DisplayName.split(\"=\");\n    rnode.DisplayName=tmpStr[tmpStr.length-1];\n}\n\nif (rnode.ApplicationUri === null || rnode.ApplicationUri === undefined || rnode.ApplicationUri === '')\n{\n    tmpStr = rnode.NodeId.split(\"=\");\n    if(tmpStr[0].length>2){rnode.ApplicationUri=tmpStr[0].substring(0,tmpStr[0].length-2);}\n        else {rnode.ApplicationUri=tmpStr[0];}\n}\n\n//make sure timestamp property exists\nif (rnode.Timestamp === undefined){\n    rnode.Timestamp = new Date().toString();     \n}\n\n\nrnode.time = new Date(rnode.Timestamp).getTime()*1000000;\n\nvar new_payload = \n    {\n        measurement: \"DeviceData\",\n        fields: {\n            //Value: rnode.Value\n        },\n        tags:{\n            //NodeId: rnode.NodeId,\n            //DataPoint: rnode.DisplayName,\n            Source: rnode.ApplicationUri,\n            //EventTime: formatDate(new Date(rnode.Timestamp))\n        },\n        timestamp: rnode.time\n    }\n;\n\n//new_payload.measurement = rnode.DisplayName;\nnew_payload.fields[rnode.DisplayName]=rnode.Value;\nreturn new_payload;\n}\n\n\n\n//main\nif (getType(msg.payload) === 'Array'){\n    for (index = 0; index < msg.payload.length; index++) { \n        msg.payload[index] = processNode(msg.payload[index]); \n    }\n} \nelse\n{\n    var newnode = processNode(msg.payload);\n    msg.payload = new Array(newnode);\n}\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 240,
+        "wires": [
+            [
+                "41a2c16.97a0a4"
+            ]
+        ]
+    },
+    {
+        "id": "7f142d2d.474494",
+        "type": "debug",
+        "z": "a1cd98e4.e9ed18",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 340,
+        "y": 460,
+        "wires": []
+    }
+]
