@@ -42,7 +42,7 @@ The Offline Dashboards sample is built upon Azure IoT Edge technology. IoT Edge 
 
 Offline Dashboards runs at the IoT Edge device continuously recording data that is sent from devices to IoT Hub
 
-![offline dashboards 1](docs/OfflineDashboards_diag1)
+![offline dashboards 1](media/OfflineDashboards_diag1)
 
 Offline Dashboards contains 3 modules:
 
@@ -50,7 +50,7 @@ Offline Dashboards contains 3 modules:
 2. An influxDB module which stores data in time series structure
 3. A Grafana module which serves data from influxDB in dashboards.
 
-![offline dashboards 2](docs/OfflineDashboards_diag2)
+![offline dashboards 2](media/OfflineDashboards_diag2)
 
 ## Manufacturing KPIs
 
@@ -94,7 +94,7 @@ The unit of KPI is percentage.
 
 The flow of data within the offline dashboards sample is depicted by green arrows in the following diagram.
 
-![data flow diagram](docs/dataflow.png)
+![data flow diagram](media/dataflow.png)
 
 * Two simulators act as OPC servers
 * OPC Publisher subscribes to 3 data points in OPC Servers
@@ -112,7 +112,7 @@ OPC Simulator is a flow implemented in NodeRed. Two simulators are used to simul
 
 | OPC Simulator Flow 1                                  | OPC Simulator Flow 2                                  |
 | ----------------------------------------------------- | ----------------------------------------------------- |
-| ![nodered simulator1](docs/nodered_sim1.png) | ![nodered simulator 2](docs/nodered_sim2.png) |
+| ![nodered simulator1](media/nodered_sim1.png) | ![nodered simulator 2](media/nodered_sim2.png) |
 
 Simulators essentially have the same template but differentiated by two settings: Product URI and Port
 
@@ -167,23 +167,23 @@ Note that STATUS values are preserved as they come from the OPC Server. We map t
 
 Sie Level Performance dashboard displays key manufacturing KPIs (OEE, Availability, Quality, Performance) per site. 
 
-![dashboard](docs/dashboard.png)
+![dashboard](media/dashboard.png)
 
 **Site** is basically defined as the OPC server that provides data and uses OPC Server's Application URI as the site name (Source). See Node Red module code for algorithm producing Application URI. In the sample application we have two different sites that corresponding to two OPC Simulators
 
-![sitecombo](docs/sitecombo.png)
+![sitecombo](media/sitecombo.png)
 
 **Ideal run rate** is the ideal capacity of production for the equipment. It is used to calculate Performance KPI. See definition for Performance KPI for the calculation method.
 
-![idealrunrate](docs/idealrunrate.png)
+![idealrunrate](media/idealrunrate.png)
 
 Each row in the dashboard represents a KPI. The gauge on the left hand side gives calculation of KPI as per the time window selected. In the example screenshot above, selected time window is "Last 12 hours". Therefore the left top gauge for OEE KPI says that OEE value is at 54.23% for the last 12 hours.
 
-![timeinterval](docs/timeinterval.png)
+![timeinterval](media/timeinterval.png)
 
 Normally operators would like to monitor KPIs for their current shift. To do that the operator has to set start of time period as start of their shift and leave end of time period as "now()", as shown in the snapshot below
 
-![timeinterval2](docs/timeinterval2.png)
+![timeinterval2](media/timeinterval2.png)
 
 To make it easier, line graphs on the right column has vertical lines on 12:00AM, 08:00AM and 04:00PM to indicate working shift changes in our fictional facility.
 
@@ -191,14 +191,14 @@ Following table depicts details of each element in the dashboard
 
 | Dashboard Element                                            |                           Snapshot                           |
 | ------------------------------------------------------------ | :----------------------------------------------------------: |
-| OEE gauge shows OEE KPI for the time period selected.        | ![OOEgauge](docs/OEEgauge.png) |
-| OEE graph shows OEE value change across time period selected. Minimum, Maximum, Average values of OEE across time period are provided in the legend. | ![oeegraph](docs/oeegraph.png) |
-| Availability gauge shows Availability KPI for the time period selected. | ![availabilitygauge](docs/availabilitygauge.png) |
-| Availability graph shows Availability value change across time period selected. Minimum, Maximum, Average values of Availability across time period are provided in the legend. The blue line indicates when machine was actually running. | ![availabilitygraph](docs/availabilitygraph.png) |
-| Quality gauge shows Quality KPI for the time period selected. | ![qualitygauge](docs/qualitygauge.png) |
-| Quality graph shows Quality value change across time period selected on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured, as green line) as well as "Bad Items" produced (items that are discarded, as red line) aligned to right axis. Contrary to Quality KPI "Good Items"  and "Bad Items" are aggregated at the minute level and their unit is number of items/min. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. | ![qualitygraph](docs/qualitygraph.png) |
-| Performance gauge shows Performance KPI for the time period selected. | ![performancegauge](docs/performancegauge.png) |
-| Performance graph shows Performance value change across time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. | ![performancegraph](docs/performancegraph.png) |
+| OEE gauge shows OEE KPI for the time period selected.        | ![OOEgauge](media/OEEgauge.png) |
+| OEE graph shows OEE value change across time period selected. Minimum, Maximum, Average values of OEE across time period are provided in the legend. | ![oeegraph](media/oeegraph.png) |
+| Availability gauge shows Availability KPI for the time period selected. | ![availabilitygauge](media/availabilitygauge.png) |
+| Availability graph shows Availability value change across time period selected. Minimum, Maximum, Average values of Availability across time period are provided in the legend. The blue line indicates when machine was actually running. | ![availabilitygraph](media/availabilitygraph.png) |
+| Quality gauge shows Quality KPI for the time period selected. | ![qualitygauge](media/qualitygauge.png) |
+| Quality graph shows Quality value change across time period selected on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured, as green line) as well as "Bad Items" produced (items that are discarded, as red line) aligned to right axis. Contrary to Quality KPI "Good Items"  and "Bad Items" are aggregated at the minute level and their unit is number of items/min. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. | ![qualitygraph](media/qualitygraph.png) |
+| Performance gauge shows Performance KPI for the time period selected. | ![performancegauge](media/performancegauge.png) |
+| Performance graph shows Performance value change across time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. | ![performancegraph](media/performancegraph.png) |
 
 ## Component Configuration
 
@@ -240,7 +240,7 @@ az iot hub device-identity show-connection-string --device-id myEdgeDevice --hub
 
 Copy the value of the `connectionString` key from the JSON output and save it. This value is the device connection string. You'll use this connection string to configure the IoT Edge runtime in the next section.
 
-![Retrieve connection string from CLI output](docs/retrieve-connection-string.png)
+![Retrieve connection string from CLI output](media/retrieve-connection-string.png)
 
 We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge, which preinstalls everything you need to run IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
 

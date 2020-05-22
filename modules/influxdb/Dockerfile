@@ -9,4 +9,5 @@ COPY initdb.iql /docker-entrypoint-initdb.d/init.iql
 COPY influxdb.conf /etc/influxdb/influxdb.conf
 
 # launch influx daemon
+# TODO:  probably don't need this
 CMD ["influxd"]

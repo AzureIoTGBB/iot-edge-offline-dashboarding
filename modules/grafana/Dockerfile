@@ -1,8 +1,5 @@
-# Specify Grafana plugins to install
-ARG GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+FROM grafana/grafana:latest
 
-# Start with upstream Grafana on Alpine linux
-FROM grafana/grafana:6.7.2
+RUN grafana-cli plugins install grafana-influxdb-flux-datasource 5.4.1
 
-# Copy Grafana config
-COPY grafana.ini /etc/grafana/grafana.ini
+COPY grafana-provisioning/ /etc/grafana/provisioning
