@@ -11,404 +11,89 @@ The architecture for this solution is composed of the following components:
 * [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
 * [Grafana](https://grafana.com/grafana/)
 
-For information on other potential "Dashboarding on the Edge" use cases, why this architecture was chosen, discussion of alternatives, please see [background](/docs/background.md).
+For information on other potential "Dashboarding on the Edge" use cases, why this architecture was chosen, discussion of alternatives, please see next section.
 
 This architecture and its components are intended to be general purpose and apply across a number of industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore the sample implementation below focuses on that use case.
 
-## About the sample
+### Solution Goals
 
-This sample implementation leverages data from an OPC-UA device.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including modbus, MQTT, or other custom protocols.  
+The purpose of this solution is to provide both general purpose guidance for dashboarding on the edge as well as a sample implementation.  While our sample implementation focuses on manufacturing, there are plenty of other potential use cases for this technology.  Some examples include:
 
-## Business Need
+* retail stores that may need local dashboards for inventory or asset management
+* warehouses that may need to manage the tracking and movement of product throughout the warehouse
+* smart buildings who may need to manage energy or HVAC efficiency throughout the property
+* "things that move" applications such as container or cruise ships that may need to operate for extended periods offline
 
-Smart Manufacturing provides new opportunities to improve inefficiencies across labor, processes, machinery, materials and energy across manufacturing lifecycle.
+The main thing in common in these scenarios is the potential need to not only send important 'site' data to the cloud for centralized reporting and analytics, but also the ability to continue local operations in the event of an internet outage.
 
-Azure Industrial IoT provides hybrid-cloud based components to build the end to end industrial IoT platform to enable innovation and to optimize operational processes.
+Our goal is to demonstrate how this can be done for a specific manufacturing use case, but also give an example that can be re-used for other use cases by:
 
-Most manufacturers start their journey by providing visibility across machines, processes, lines, factories through their unified industrial IoT platform. This is achieved by collecting data from manufacturing processes to provide end to end visibility.
+* replacing the data source(s) to be specific to the new use cases
+* replacing the configuration files for the data ingestion and dashboards
 
-Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning or engineers monitoring and fine-tuning production phases.
+### Solution Architecture
 
-Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communications to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communications to cloud is broken and sent to the industrial IoT platform when facility is restored. But how can users access real time information in the meanwhile?
+the architecture for this solution utilizes four main components in addition to Azure IoT Hub.  Azure IoT Edge is utilized to orchestrate and manage modules at the edge in addition to providing capabilities for offline operation and message routing.  Node-RED is an open-source flow programming tool utilized to easily integrate and route messages from edge devices to InfluxDB.  InfluxDB is an open-source, time series database for storing device telemetry.  Lastly, Grafana is an open-source analytics and dashboarding tool for visualizing device telemetry.
 
-There are two major points this sample implementation addresses:
+#### Reasons for selecting this architecture
 
-* Give local machine operators the ability to view telemetry and Key Performance Indicators (KPIs) during intermittent or offline internet connection scenarios.
-* View near real-time telemetry and KPIs without the latency of telemetry data traveling to the cloud first.
+The main purpose of this solution is to provide an ability for local operators to view dashboards at the edge regardless of whether the edge device was online or offline.  This is a natural scenario that IoT Edge supports.  In order to support dashboarding however, there was a need to also select both a storage component as well as a visualization component.  
 
-## The Solution
+#### Storage Component
+
+A number of storage solutions were reviewed and the team selected InfluxDB for the following reasons:
+
+* Influx DB is a time series DB and as such is a natural fit for telemetry data from devices
+* Open-source with a large community following
+* Supports plugin to Grafana
+* Node-RED libraries for easy integration
+* Quick time to value and can be deployed as a Docker container
+* Ranked #1 for time series DBs according to [DB-Engines](https://db-engines.com/en/system/InfluxDB)
+
+Although InfluxDB was chosen to support storage, other DBs were considered and could potentially be used as well.  For example, Graphite, Prometheus and Elasticsearch were also considered.  Azure Time Series insights was also considered but at the time of this activity was not yet available on Azure IoT Edge.
+
+#### Visualization Component
+
+A number of visualization solutions were reviewed and the team selected Grafana for the following reasons:
+
+* Open-source with a large community following
+* This particular use case covers metric analysis vs log analysis
+* Flexibility with support for a wide array of plugins to different DBs and other supporting tools
+* Allows you to share dashboards across an organization
+* Quick time to value and can be deployed as a Docker container
+
+Although Grafana was chosen to support visualization and dashboarding, other tools were considered and could potentially be used as well.  For example, Kibana may be a better fit for visualization and analyzing of log files and is a natural fit if working with Elasticsearch.  Chronograf was considered, but was limited to InfluxDB as a datasource.  PowerBI Server was also investigated, but lack of support for being able to containerize the PowerBI Server meant it could not be used directly with Azure IoT Edge. Additionally, PowerBI Server does not support the real-time "live" dashboaring required for this solution.
+
+#### Integration Component
+
+Node-RED was chosen as the tool to ease integration between IoT Edge and InfluxDB.  Although the integration component could be written in a number of programming languages and containerized, Node-RED was selected for the following reasons:
+
+* Open-source with a large community following
+* Readily available [nodes](https://github.com/iotblackbelt/noderededgemodule) for tapping into IoT Edge message routes
+* Readily available nodes for integrating and inserting data into InfluxDB as well as many other DBs
+* Large library of nodes to integrate with other tools and platforms
+* Easy flow-based programming allows manipulation and massaging of messages before inserted into a DB.
+* Can be deployed as a Docker container
+
+## Solution Architecture
 
 The Offline Dashboards sample is built upon Azure IoT Edge technology. IoT Edge is responsible for deploying and managing lifecycle of a set of modules (described later) that make up Offline Dashboards sample.
 
-Offline Dashboards runs at the IoT Edge device continuously recording data that is sent from devices to IoT Hub
+![](media/OfflineDashboards_diag.png)
 
-![offline dashboards 1](media/OfflineDashboards_diag1)
-
-Offline Dashboards contains 3 modules:
+Offline Dashboards runs at the IoT Edge device continuously recording data that is sent from devices to IoT Hub. It contains 3 modules:
 
 1. A Node-Red module that collects data from OPC Publisher and writes that data into influxDB. Shout out to our IoT peers in Europe for the [IOT Edge nodered module](https://github.com/iotblackbelt/noderededgemodule) that enable this.
 2. An influxDB module which stores data in time series structure
 3. A Grafana module which serves data from influxDB in dashboards.
 
-![offline dashboards 2](media/OfflineDashboards_diag2)
+![image-20200529160206347](media/OfflineDashboards_diag0.png)
 
-## Manufacturing KPIs
+## About the sample solution
 
-Offline Dashboards solution includes a sample dashboard to display following fundamental KPIs in manufacturing environment.
+This sample implementation leverages data from two OPC-UA servers.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including modbus, MQTT, or other custom protocols.  
 
-**Performance:** Performance KPI indicates if the machine is manufacturing  good items as much as it is expected. It is calculated as
+More Information about the sample solution can be found [here](/docs/manufacturing_kpis.md) 
 
-```html
-Performace = (Good Items Produced/Total Time Machine was Running)/(Ideal Rate of Production)
-```
+Step by step deployment instructions can be found [here](/docs/deployment.md) 
 
-where "Ideal Rate of Production" is what we expect machine to perform. The unit of KPI is percentage and "Ideal Rate of Production" is provided as a parameter to dashboards.
-
-**Quality:** Quality KPI gives you the ratio of good items produced by the machine over all items produced (i.e. good items produced and bad items produced). Calculation formula is
-
-```html
-Quality = (Good Items Produced)/(Good Items Produced + Bad Items Produced)
-```
-
-The unit of KPI is percentage.
-
-**Availability:** Availability is defined as percentage of time the machine was available. Normally, this does not include any time periods where there is not any planned production. However, for the sake of simplicity, we assume here that our factory operates 24x7.
-
-The calculation formula is
-
-```html
-Availability = (Running Time)/(Running Time + Idle Time)
-```
-
-The unit of KPI is percentage.
-
-**OEE (Operational Equipment Efficiency):** Finally, OEE is a higher level KPI that is calculated from other KPIs above and depicts overall efficiency of equipment. The calculation formula is
-
-```html
-OEE = Availability x Quality x Performance
-```
-
-The unit of KPI is percentage.
-
-## Sample Data Sources and Flow
-
-The flow of data within the offline dashboards sample is depicted by green arrows in the following diagram.
-
-![data flow diagram](media/dataflow.png)
-
-* Two simulators act as OPC servers
-* OPC Publisher subscribes to 3 data points in OPC Servers
-* Data collected by OPC Publisher is sent to cloud (through Edge Hub module) AND relayed to offline dashboards Node Red module for processing.
-* Node-RED module unifies data format and writes data into InfluxDB
-* Grafana dashboards read data from InfluxDB and display dashboards to operators/users.
-* OPC Publisher, Node-RED module, InfluxDB and Grafana are all deployed as separate containers through IOT Edge runtime.
-* For sake of simplicity, two OPC simulators are also deployed as node red modules in a container through IoT Edge runtime.
-
-### OPC Simulator
-
-This example solution uses an [OPC simulator](https://flows.nodered.org/node/node-red-contrib-opcua) to simulate data flow coming from machines in manufacturing environment.
-
-OPC Simulator is a flow implemented in NodeRed. Two simulators are used to simulate two different OPC servers connected to the same IOT Edge device.
-
-| OPC Simulator Flow 1                                  | OPC Simulator Flow 2                                  |
-| ----------------------------------------------------- | ----------------------------------------------------- |
-| ![nodered simulator1](media/nodered_sim1.png) | ![nodered simulator 2](media/nodered_sim2.png) |
-
-Simulators essentially have the same template but differentiated by two settings: Product URI and Port
-
-|                      | Product URI | Port  |
-| -------------------- | ----------- | ----- |
-| OPC Simulator Flow 1 | OPC-Site-01 | 54845 |
-| OPC Simulator Flow 2 | OPC-Site-02 | 54855 |
-
-Three data points are generated by the simulators:
-
-#### Data Point: STATUS
-
-STATUS indicates the current status of device that OPC server is connected to.  STATUS values are randomly generated using following rules
-
-* Value changes at least 10min intervals
-* STATUS value is one of the following: 101,105,108, 102,104,106,107,109
-* STATUS Values 101, 105, 108 mean machine is running
-* STATUS Values 102,104,106,107,109 mean machine is not running
-* Random number generator ensures machine will be in RUNNING state (i.e STATUS 101,105,108) 90% of the time
-
-#### Data Point: ITEM_COUNT_GOOD
-
-ITEM_COUNT_GOOD indicates number of good items (products that pass quality) produced by the machine since the last data point. It is a random whole number between 80-120. Simulators generate item counts every 5 secs. This could be taken in any unit that you wish but we will regard it as "number of items" in this example.
-
-#### Data Point: ITEM_COUNT_BAD
-
-ITEM_COUNT_BAD indicates number of bad items (ITEMS_DISCARDED) produced by the machine since the last data point. It is a random whole number between 0-10. Simulators generate item counts every 5 secs. This could be taken in any unit that you wish but we will regard it as "number of items" in this example.
-
-### Data Processing Module (NodeRed)
-
-Data collected from simulators by OPC publisher module are sent to NodeRed module for processing. NodeRed module does minimal processing as to validate data and convert to a suitable format and writes data into InfluxDB.
-
-During processing Application URI value is extracted from JSON data and written to "Source" tag in the database schema.
-
-### Database (InfluxDB)
-
-All data collected flows into a single measurement (DeviceData) in a single database (telemetry) in InfluxDB. The measurement "DeviceData" has 3 fields and 1 tag:
-
-Fields
-
-* STATUS: float
-* ITEM_COUNT_GOOD: float
-* ITEM_COUNT_BAD: float
-
-Tags
-
-* Source
-
-Note that STATUS values are preserved as they come from the OPC Server. We map these values to determine if machine is running with influx queries.
-
-### Dashboard: Site Level Performance
-
-Sie Level Performance dashboard displays key manufacturing KPIs (OEE, Availability, Quality, Performance) per site. 
-
-![dashboard](media/dashboard.png)
-
-**Site** is basically defined as the OPC server that provides data and uses OPC Server's Application URI as the site name (Source). See Node Red module code for algorithm producing Application URI. In the sample application we have two different sites that corresponding to two OPC Simulators
-
-![sitecombo](media/sitecombo.png)
-
-**Ideal run rate** is the ideal capacity of production for the equipment. It is used to calculate Performance KPI. See definition for Performance KPI for the calculation method.
-
-![idealrunrate](media/idealrunrate.png)
-
-Each row in the dashboard represents a KPI. The gauge on the left hand side gives calculation of KPI as per the time window selected. In the example screenshot above, selected time window is "Last 12 hours". Therefore the left top gauge for OEE KPI says that OEE value is at 54.23% for the last 12 hours.
-
-![timeinterval](media/timeinterval.png)
-
-Normally operators would like to monitor KPIs for their current shift. To do that the operator has to set start of time period as start of their shift and leave end of time period as "now()", as shown in the snapshot below
-
-![timeinterval2](media/timeinterval2.png)
-
-To make it easier, line graphs on the right column has vertical lines on 12:00AM, 08:00AM and 04:00PM to indicate working shift changes in our fictional facility.
-
-Following table depicts details of each element in the dashboard
-
-| Dashboard Element                                            |                           Snapshot                           |
-| ------------------------------------------------------------ | :----------------------------------------------------------: |
-| OEE gauge shows OEE KPI for the time period selected.        | ![OOEgauge](media/OEEgauge.png) |
-| OEE graph shows OEE value change across time period selected. Minimum, Maximum, Average values of OEE across time period are provided in the legend. | ![oeegraph](media/oeegraph.png) |
-| Availability gauge shows Availability KPI for the time period selected. | ![availabilitygauge](media/availabilitygauge.png) |
-| Availability graph shows Availability value change across time period selected. Minimum, Maximum, Average values of Availability across time period are provided in the legend. The blue line indicates when machine was actually running. | ![availabilitygraph](media/availabilitygraph.png) |
-| Quality gauge shows Quality KPI for the time period selected. | ![qualitygauge](media/qualitygauge.png) |
-| Quality graph shows Quality value change across time period selected on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured, as green line) as well as "Bad Items" produced (items that are discarded, as red line) aligned to right axis. Contrary to Quality KPI "Good Items"  and "Bad Items" are aggregated at the minute level and their unit is number of items/min. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. | ![qualitygraph](media/qualitygraph.png) |
-| Performance gauge shows Performance KPI for the time period selected. | ![performancegauge](media/performancegauge.png) |
-| Performance graph shows Performance value change across time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. | ![performancegraph](media/performancegraph.png) |
-
-## Component Configuration
-
-Each of the components in the solution are driven by configuration files contained in and deployed via their corresponding Docker images. As seen later in the module deployment, we use an Azure DevOps pipeline to automate creation of the Docker images and inclusion of the correct configuration files for each solution component.  This allows you to update the dashboard, for example, by updating the corresponding dashboard configuration file and executing the pipeline.
-
-## Deployment
-
-To deploy, we the newest version of the Azure IoT extension, called `azure-iot`. The legacy version is called `azure-iot-cli-ext`. You should only have one version installed at a time. You can use the command `az extension list` to validate the currently installed extensions.
-
-Use `az extension remove --name azure-cli-iot-ext` to remove the legacy version of the extension.
-
-Use `az extension add --name azure-iot` to add the new version of the extension.
-
-### Create Resources
-
-Create a resource group to manage all the resources used in this solution
-
-```bash
-az group create --name {resource_group} --location {datacenter_location}
-```
-
-Use following to create the IoT Hub resource. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux>
-
-```bash
-az iot hub create  --resource-group {resource_group} --name {hub_name} --sku S1
-```
-
-Create a device identity for your IoT Edge device so that it can communicate with your IoT hub. The device identity lives in the cloud, and you use a unique device connection string to associate a physical device to a device identity. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
-
-```bash
-az iot hub device-identity create --hub-name {hub_name} --device-id myEdgeDevice --edge-enabled
-```
-
-Retrieve the connection string for your device, which links your physical device with its identity in IoT Hub.
-
-```bash
-az iot hub device-identity show-connection-string --device-id myEdgeDevice --hub-name {hub_name}
-```
-
-Copy the value of the `connectionString` key from the JSON output and save it. This value is the device connection string. You'll use this connection string to configure the IoT Edge runtime in the next section.
-
-![Retrieve connection string from CLI output](media/retrieve-connection-string.png)
-
-We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge, which preinstalls everything you need to run IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
-
-```bash
-az vm image terms accept --urn microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest
-
-az vm create --resource-group {resource_group} --name myEdgeVM --image microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest --admin-username azureuser --generate-ssh-keys
-```
-
-Use the edge device primary device connection string you noted above, to connect IoT Edge device to IoT Hub
-
-```bash
-az vm run-command invoke -g {resource_group} -n myEdgeVM --command-id RunShellScript --script "/etc/iotedge/configedge.sh '{device_connection_string}'"
-```
-
-### Build Module Images
-
-Before we can deploy the edge modules needed for this solution, we need to build the module images using the Dockerfiles found in this repository.  Once built, the images need to be placed into a container registry.
-
-Clone this repository to your local machine.
-```bash
-git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
-```
-Next we need to build the image for each module and push it to a container registry.  Replace {registry} in the commands below with your own registry location.
-```bash
-sudo docker login {registry}
-
-cd iot-edge-offline-dashboarding/modules/edge-to-influxdb
-sudo docker build --tag {registry}/edge-to-influxdb:1.0 .
-sudo docker push {registry}/edge-to-influxdb:1.0
-
-cd ../grafana
-sudo docker build --tag {registry}/grafana:1.0 .
-sudo docker push {registry}/grafana:1.0
-
-cd ../influxdb
-sudo docker build --tag {registry}/influxdb:1.0 .
-sudo docker push {registry}/influxdb:1.0
-
-cd ../opc-publisher
-sudo docker build --tag {registry}/opc-publisher:1.0 .
-sudo docker push {registry}/opc-publisher:1.0
-
-cd ../opc-simulator
-sudo docker build --tag {registry}/opc-simulator:1.0 .
-sudo docker push {registry}/opc-simulator:1.0
-```
-
-### Deploy Modules
-
-Now that we have all five module images in a container registry, we can deploy instances of these module images to an edge machine using IoT Hub.
-
-First, since the edge machine will need persistent storage for the InfluxDB database, we need to create a directory for the module to bind to.  Use the ssh command to login into your edge machine and run the following.
-```bash
-sudo mkdir /influxdata
-sudo chmod 777 -R /influxdata
-```
-
-Next, you need to deploy the modules to the edge device.  Navigate to your IoT Hub in the Azure portal go to IoT Edge.  You should see your edge device.  Click on your edge device and then click "Set Modules."  In the Container Registry Credentials, put the name, address, user name and password of the registry container you used in the "Build Module Images" section of this readme.
-
-In the IoT Edge Modules section, click the "+ Add" button and select "IoT Edge Module."  For IoT Edge Module Name put "edge-to-influxdb" and for Image URI put {registry}/edge-to-influxdb:1.0.  Be sure to replace {registry} with your own registry address.  Switch to the "Container Create Options and place the following JSON into the create options field.
-```json
-{
-    "HostConfig": {
-        "PortBindings": {
-            "1880/tcp": [
-                {
-                    "HostPort": "1881"
-                }
-            ]
-        }
-    }
-}
-```
-Click the "Add" button to complete the creation of the module to be deployed.  We now need to do this for the other four remaining modules.  The following are the property values to specify for each module.
-
-Module grafana:
-```json
-IoT Edge Module Name: grafana
-Image URI: {registry}/grafana:1.0
-Environment Variable: 
-    Name: GF_SECURITY_ADMIN_PASSWORD
-    Value: {password}
-Container Create Options:
-{
-    "HostConfig": {
-        "PortBindings": {
-            "3000/tcp": [
-                {
-                    "HostPort": "3000"
-                }
-            ]
-        }
-    }
-}
-```
-Module influxdb:
-```json
-IoT Edge Module Name: influxdb
-Image URI: {registry}/influxdb:1.0
-Container Create Options:
-{
-    "HostConfig": {
-        "Binds": [
-            "/influxdata:/var/lib/influxdb"
-        ],
-        "PortBindings": {
-            "8086/tcp": [
-                {
-                    "HostPort": "8086"
-                }
-            ]
-        }
-    }
-}
-```
-Module opc-publisher:
-```json
-IoT Edge Module Name: opc-publisher
-Image URI: {registry}/opc-publisher:1.0
-Container Create Options:
-{
-    "Hostname": "publisher",
-    "Cmd": [
-        "--pf=/app/pn.json",
-        "--aa"
-    ]
-}
-```
-Module opc-simulator:
-```json
-IoT Edge Module Name: opc-simulator
-Image URI: {registry}/opc-simulator:1.0
-Container Create Options:
-{
-    "HostConfig": {
-        "PortBindings": {
-            "1880/tcp": [
-                {
-                    "HostPort": "1880"
-                }
-            ]
-        }
-    }
-}
-```
-You should now have the following in your set modules dialog:
-
-![Edge Modules](media/edge-modules.png)
-
-Next, we need to establish a route in the "Routes" tab.  Click on the "Routes" tab and add the following route with the name "opc":
-```
-FROM /messages/modules/opc-publisher/* INTO BrokeredEndpoint("/modules/edge-to-influxdb/inputs/input1")
-```
-![Edge Routes](media/edge-routes.png)
-
-You are now ready to deploy the modules to your edge machine.  Click the "Review + Create" button and then the "Create" button.  This will kick off the deployment.  If all goes well you should see all modules running after several minutes.  IoT Edge Runtime Response should be "200 -- Ok" and you should see all modules runtime status as "running."
-
-![Edge Success](media/edge-success.png)
-
-### View Grafana Dashboard
-
-Now that the edge modules are successfully running, you can view the running Grafana dashboard.  First, make sure you have opened port 3000 on your edge VM.  Next, replace the {ip-address} in the following link with your own VM ip address and navigate to that site:
-```http
-http://{ip-address}:3000/
-```
-Login to Grafana using "admin" as user name and the password you specified in the "GF_SECURITY_ADMIN_PASSWORD" environment variable you created in grafana module options.  Once you have logged into Grafana, click the gear icon on the left hand panel and select data sources.  You should see the "myinfluxdb" datasource.  Click on it to navigate into the settings.  Click the "Save & Test" button at the bottom.  If things are working properly you should see "Data source connected and database found."    
-
-Next, hover over the dashboard icon in the left side panel and click "Manage."  You should see the "Site Level Performance" dashboard under the General folder.  Click on it to open the dashboard.  You should see the fully running dashboard like below:
-
-![Grafana Dashboard](media/grafana-dash.png)
