@@ -1,60 +1,6 @@
-## Component Configuration
+# IoT Offline Dashboarding sample - manual deployment
 
-Each of the components in the solution are driven by configuration files contained in and deployed via their corresponding Docker images. As seen later in the module deployment, we use an Azure DevOps pipeline to automate creation of the Docker images and inclusion of the correct configuration files for each solution component.  This allows you to update the dashboard, for example, by updating the corresponding dashboard configuration file and executing the pipeline.
-
-## Deployment
-
-To deploy, we use the newest version of the Azure IoT extension, called `azure-iot`. The legacy version is called `azure-iot-cli-ext`. You should only have one version installed at a time. You can use the command `az extension list` to validate the currently installed extensions.
-
-Use `az extension remove --name azure-cli-iot-ext` to remove the legacy version of the extension.
-
-Use `az extension add --name azure-iot` to add the new version of the extension.
-
-### Create Resources
-
-Create a resource group to manage all the resources used in this solution
-
-```bash
-az group create --name {resource_group} --location {datacenter_location}
-```
-
-Use following to create the IoT Hub resource. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux>
-
-```bash
-az iot hub create  --resource-group {resource_group} --name {hub_name} --sku S1
-```
-
-Create a device identity for your IoT Edge device so that it can communicate with your IoT Hub. The device identity lives in the cloud, and you use a unique device connection string to associate a physical device to a device identity. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
-
-```bash
-az iot hub device-identity create --hub-name {hub_name} --device-id myEdgeDevice --edge-enabled
-```
-
-Retrieve the connection string for your device, which links your physical device with its identity in IoT Hub.
-
-```bash
-az iot hub device-identity show-connection-string --device-id myEdgeDevice --hub-name {hub_name}
-```
-
-Copy the value of the `connectionString` key from the JSON output and save it. This value is the device connection string. You'll use this connection string to configure the IoT Edge runtime in the next section.
-
-![Retrieve connection string from CLI output](../media/retrieve-connection-string.png)
-
-We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
-
-```bash
-az vm image terms accept --urn microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest
-
-az vm create --resource-group {resource_group} --name myEdgeVM --image microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest --admin-username azureuser --generate-ssh-keys
-```
-
-Use the edge device primary device connection string you noted above, to connect IoT Edge device to IoT Hub
-
-```bash
-az vm run-command invoke -g {resource_group} -n myEdgeVM --command-id RunShellScript --script "/etc/iotedge/configedge.sh '{device_connection_string}'"
-```
-
-### Build Module Images
+## Build Module Images
 
 Before we can deploy the edge modules needed for this solution, we need to build the module images using the Dockerfiles found in this repository.  Once built, the images need to be placed into a container registry.
 
@@ -64,7 +10,7 @@ Clone this repository to your local machine.
 git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
 ```
 
-Next, we need to build the image for each module and push it to a container registry.  Replace {registry} in the commands below with your own registry location.
+Next, we need to build the image for each module and push it to a docker container registry.  Replace {registry} in the commands below with your own registry location.  If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab teh username and password, you'll need it later.
 
 ```bash
 sudo docker login {registry}
@@ -90,7 +36,7 @@ sudo docker build --tag {registry}/opc-simulator:1.0 .
 sudo docker push {registry}/opc-simulator:1.0
 ```
 
-### Deploy Modules
+## Deploy Modules
 
 Now that we have all five module images in a container registry, we can deploy instances of these module images to an edge machine using IoT Hub.
 
@@ -126,7 +72,7 @@ Module grafana:
 ```json
 IoT Edge Module Name: grafana
 Image URI: {registry}/grafana:1.0
-Environment Variable: 
+Environment Variable:
     Name: GF_SECURITY_ADMIN_PASSWORD
     Value: {password}
 Container Create Options:
@@ -205,7 +151,7 @@ You should now have the following in your set modules dialog:
 
 Next, we need to establish a route in the "Routes" tab.  Click on the "Routes" tab and add the following route with the name "opc":
 
-```
+```bash
 FROM /messages/modules/opc-publisher/* INTO BrokeredEndpoint("/modules/edge-to-influxdb/inputs/input1")
 ```
 
@@ -227,7 +173,11 @@ Next, replace the {ip-address} in the following link with your own VM ip address
 http://{ip-address}:3000/
 ```
 
-Login to Grafana using "admin" as user name and the password you specified in the "GF_SECURITY_ADMIN_PASSWORD" environment variable you created in grafana module options.  Once you have logged into Grafana, click the gear icon on the left-hand panel and select data sources.  You should see the "myinfluxdb" data source.  Click on it to navigate into the settings.  Click the "Save & Test" button at the bottom.  If things are working properly you should see "Data source connected and database found."    
+Login to Grafana using "admin" as user name and the password you specified in the "GF_SECURITY_ADMIN_PASSWORD" environment variable you created in grafana module options.  
+
+> NOTE:  There is currently a bug in this sample. For some reason, the data source details are deployed correctly, but not 'enabled'. This will cause your dashboard to complain with an error and not show any data.  
+>
+> For now, once you have logged into Grafana, click the gear icon on the left-hand panel and select data sources.  You should see the "myinfluxdb" data source.  Click on it to navigate into the settings.  Click the "Save & Test" button at the bottom.  If things are working properly you should see "Data source connected and database found."
 
 Next, hover over the dashboard icon in the left side panel and click "Manage."  You should see the "Site Level Performance" dashboard under the General folder.  Click on it to open the dashboard.  You should see the fully running dashboard like below:
 

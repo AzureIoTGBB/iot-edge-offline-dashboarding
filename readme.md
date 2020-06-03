@@ -15,7 +15,7 @@ For information on other potential "Dashboarding on the Edge" use cases, why thi
 
 This architecture and its components are intended to be general purpose and apply across several industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore, the sample implementation below focuses on that use case.
 
-### Solution Goals
+## Solution Goals
 
 The purpose of this solution is to provide both general purpose guidance for dashboarding on the edge as well as a sample implementation.  While our sample implementation focuses on manufacturing, there are plenty of other potential use cases for this technology.  Some examples include:
 
@@ -31,11 +31,11 @@ Our goal is to demonstrate how this can be done for a specific manufacturing use
 * replacing the data source(s) to be specific to the new use cases
 * replacing the configuration files for the data ingestion and dashboards
 
-### Solution Architecture
+## Solution Architecture Components
 
-The architecture for this solution utilizes four main components in addition to Azure IoT Hub.  Azure IoT Edge is utilized to orchestrate and manage modules at the edge in addition to providing capabilities for offline operation and message routing.  Node-RED is an open-source flow programming tool utilized to easily integrate and route messages from edge devices to InfluxDB.  InfluxDB is an open-source, time series database for storing device telemetry.  Lastly, Grafana is an open-source analytics and dashboarding tool for visualizing device telemetry.
+The architecture for this solution utilizes four main components in addition to Azure IoT Hub.  [Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/) is utilized to orchestrate and manage modules at the edge in addition to providing capabilities for offline operation and message routing.  [Node-RED](https://nodered.org/) is an open-source flow programming tool utilized to easily integrate and route messages from edge devices to InfluxDB.  [InfluxDB](https://www.influxdata.com/) is an open-source, time series database for storing device telemetry.  Lastly, [Grafana](https://grafana.com/) is an open-source analytics and dashboarding tool for visualizing device telemetry.
 
-#### Reasons for selecting this architecture
+### Reasons for selecting this architecture
 
 The main purpose of this solution is to provide an ability for local operators to view dashboards at the edge regardless of whether the edge device was online or offline.  This is a natural scenario that IoT Edge supports.  To support dashboarding however, there was a need to also select both a storage component as well as a visualization component.  
 
@@ -79,11 +79,11 @@ Node-RED was chosen as the tool to ease integration between IoT Edge and InfluxD
 
 The Offline Dashboards sample is built upon Azure IoT Edge technology. IoT Edge is responsible for deploying and managing lifecycle of a set of modules (described later) that make up Offline Dashboards sample.
 
-![](media/OfflineDashboards_diag.png)
+![offline dashboards](media/OfflineDashboards_diag.png)
 
 Offline Dashboards run at the IoT Edge device continuously recording data that is sent from devices to IoT Hub. It contains 3 modules:
 
-1. A Node-Red module that collects data from OPC Publisher and writes that data into InfluxDB. Shout out to our IoT peers in Europe for the [IOT Edge nodered module](https://flows.nodered.org/node/node-red-contrib-azure-iot-edge-kpm) that enable this.
+1. A Node-Red module that collects data from one or more data sources, in our case off of the edgeHub message bus, and writes that data into InfluxDB.
 2. An InfluxDB module which stores data in time series structure.
 3. A Grafana module which serves data from InfluxDB in dashboards.
 
@@ -93,7 +93,4 @@ Offline Dashboards run at the IoT Edge device continuously recording data that i
 
 This sample implementation leverages data from two OPC-UA servers.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including Modbus, MQTT, or other custom protocols.  
 
-More Information about the sample solution can be found [here](/docs/manufacturing_kpis.md) 
-
-Step by step deployment instructions can be found [here](/docs/deployment.md) 
-
+More Information about the sample solution can be found [here](/docs/manufacturing_kpis.md)

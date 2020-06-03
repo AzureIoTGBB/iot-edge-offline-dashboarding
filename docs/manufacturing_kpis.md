@@ -1,47 +1,11 @@
-## Business Need
 
-Smart Manufacturing provides new opportunities to improve inefficiencies across labor, processes, machinery, materials and energy across the manufacturing lifecycle.
-
-Azure Industrial IoT provides hybrid-cloud based components to build the end to end industrial IoT platform to enable innovation and to optimize operational processes.
-
-Most manufacturers start their journey by providing visibility across machines, processes, lines amd factories through their unified industrial IoT platform. This is achieved by collecting data from manufacturing processes to provide end to end visibility.
-
-Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning or engineers monitoring and fine-tuning production phases.
-
-Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communications to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communications to cloud is broken and sent to the industrial IoT platform when facility is restored. But how can users access real time information in the meanwhile?
-
-There are two major points this sample implementation addresses:
-
-* Give local machine operators the ability to view telemetry and Key Performance Indicators (KPIs) during intermittent or offline internet connection scenarios.
-* View near real-time telemetry and KPIs without the latency of telemetry data traveling to the cloud first.
-
-## Solution Architecture
-
-The Offline Dashboards sample is built upon Azure IoT Edge technology. IoT Edge is responsible for deploying and managing lifecycle of a set of modules (described later) that make up Offline Dashboards sample.
-
-Offline Dashboards run at the IoT Edge device continuously recording data that is sent from devices to IoT Hub
-
-![offline dashboards 1](../media/OfflineDashboards_diag1.png)
-
-Offline Dashboards contains 3 modules:
-
-1. A Node-RED module that collects data from OPC Publisher and writes that data into influxDB. Shout out to our IoT peers in Europe for the [IOT Edge Node-RED module](https://github.com/iotblackbelt/noderededgemodule) that enable this.
-2. An InfluxDB module which stores data in time series structure
-3. A Grafana module which serves data from InfluxDB in dashboards.
-
-![offline dashboards 2](../media/OfflineDashboards_diag2.png)
-
-
-
-
-
-
+# IoT Dashboarded Edge samples - OEE drilldown
 
 ## Manufacturing KPIs
 
-Offline Dashboards solution includes a sample dashboard to display following fundamental KPIs in manufacturing environment.
+Our Offline Dashboards solution includes a sample dashboard to display OEE and its component KPIs in manufacturing environment.
 
-**Performance:** Performance KPI indicates if the machine is manufacturing  good items as much as it is expected. It is calculated as
+**Performance:** Performance KPI indicates if the machine is manufacturing good items as much as it is expected. It is calculated as
 
 ```html
 Performance = (Good Items Produced/Total Time Machine was Running)/(Ideal Rate of Production)
@@ -150,7 +114,7 @@ Note that STATUS values are preserved as they come from the OPC Server. We map t
 
 ### Dashboard: Site Level Performance
 
-Site Level Performance dashboard displays key manufacturing KPIs (OEE, Availability, Quality, Performance) per site. 
+Site Level Performance dashboard displays key manufacturing KPIs (OEE, Availability, Quality, Performance) per site.
 
 ![dashboard](../media/dashboard.png)
 
@@ -184,6 +148,3 @@ Following table depicts details of each element in the dashboard
 | Quality graph shows Quality value change across time period selected on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured, as green line) as well as "Bad Items" produced (items that are discarded, as red line) aligned to right axis. Contrary to Quality KPI "Good Items"  and "Bad Items" are aggregated at the minute level and their unit is number of items/min. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. |      ![qualitygraph](../media/qualitygraph.png)      |
 | Performance gauge shows Performance KPI for the time period selected. |  ![performancegauge](../media/performancegauge.png)  |
 | Performance graph shows Performance value change across time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. |  ![performancegraph](../media/performancegraph.png)  |
-
-
-
