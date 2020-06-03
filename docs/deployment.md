@@ -4,7 +4,7 @@ Each of the components in the solution are driven by configuration files contain
 
 ## Deployment
 
-To deploy, we the newest version of the Azure IoT extension, called `azure-iot`. The legacy version is called `azure-iot-cli-ext`. You should only have one version installed at a time. You can use the command `az extension list` to validate the currently installed extensions.
+To deploy, we use the newest version of the Azure IoT extension, called `azure-iot`. The legacy version is called `azure-iot-cli-ext`. You should only have one version installed at a time. You can use the command `az extension list` to validate the currently installed extensions.
 
 Use `az extension remove --name azure-cli-iot-ext` to remove the legacy version of the extension.
 
@@ -24,7 +24,7 @@ Use following to create the IoT Hub resource. Detailed information can be found 
 az iot hub create  --resource-group {resource_group} --name {hub_name} --sku S1
 ```
 
-Create a device identity for your IoT Edge device so that it can communicate with your IoT hub. The device identity lives in the cloud, and you use a unique device connection string to associate a physical device to a device identity. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
+Create a device identity for your IoT Edge device so that it can communicate with your IoT Hub. The device identity lives in the cloud, and you use a unique device connection string to associate a physical device to a device identity. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
 
 ```bash
 az iot hub device-identity create --hub-name {hub_name} --device-id myEdgeDevice --edge-enabled
@@ -38,9 +38,9 @@ az iot hub device-identity show-connection-string --device-id myEdgeDevice --hub
 
 Copy the value of the `connectionString` key from the JSON output and save it. This value is the device connection string. You'll use this connection string to configure the IoT Edge runtime in the next section.
 
-![Retrieve connection string from CLI output](media/retrieve-connection-string.png)
+![Retrieve connection string from CLI output](../media/retrieve-connection-string.png)
 
-We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge, which preinstalls everything you need to run IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
+We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
 
 ```bash
 az vm image terms accept --urn microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest
@@ -64,7 +64,7 @@ Clone this repository to your local machine.
 git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
 ```
 
-Next we need to build the image for each module and push it to a container registry.  Replace {registry} in the commands below with your own registry location.
+Next, we need to build the image for each module and push it to a container registry.  Replace {registry} in the commands below with your own registry location.
 
 ```bash
 sudo docker login {registry}
@@ -201,7 +201,7 @@ Container Create Options:
 
 You should now have the following in your set modules dialog:
 
-![Edge Modules](media/edge-modules.png)
+![Edge Modules](../media/edge-modules.png)
 
 Next, we need to establish a route in the "Routes" tab.  Click on the "Routes" tab and add the following route with the name "opc":
 
@@ -209,11 +209,11 @@ Next, we need to establish a route in the "Routes" tab.  Click on the "Routes" t
 FROM /messages/modules/opc-publisher/* INTO BrokeredEndpoint("/modules/edge-to-influxdb/inputs/input1")
 ```
 
-![Edge Routes](media/edge-routes.png)
+![Edge Routes](../media/edge-routes.png)
 
 You are now ready to deploy the modules to your edge machine.  Click the "Review + Create" button and then the "Create" button.  This will kick off the deployment.  If all goes well you should see all modules running after several minutes.  IoT Edge Runtime Response should be "200 -- Ok" and you should see all modules runtime status as "running."
 
-![Edge Success](media/edge-success.png)
+![Edge Success](../media/edge-success.png)
 
 ### View Grafana Dashboard
 
@@ -227,8 +227,8 @@ Next, replace the {ip-address} in the following link with your own VM ip address
 http://{ip-address}:3000/
 ```
 
-Login to Grafana using "admin" as user name and the password you specified in the "GF_SECURITY_ADMIN_PASSWORD" environment variable you created in grafana module options.  Once you have logged into Grafana, click the gear icon on the left hand panel and select data sources.  You should see the "myinfluxdb" datasource.  Click on it to navigate into the settings.  Click the "Save & Test" button at the bottom.  If things are working properly you should see "Data source connected and database found."    
+Login to Grafana using "admin" as user name and the password you specified in the "GF_SECURITY_ADMIN_PASSWORD" environment variable you created in grafana module options.  Once you have logged into Grafana, click the gear icon on the left-hand panel and select data sources.  You should see the "myinfluxdb" data source.  Click on it to navigate into the settings.  Click the "Save & Test" button at the bottom.  If things are working properly you should see "Data source connected and database found."    
 
 Next, hover over the dashboard icon in the left side panel and click "Manage."  You should see the "Site Level Performance" dashboard under the General folder.  Click on it to open the dashboard.  You should see the fully running dashboard like below:
 
-![Grafana Dashboard](media/grafana-dash.png)
+![Grafana Dashboard](../media/grafana-dash.png)
