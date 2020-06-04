@@ -25,10 +25,9 @@ stages:
     steps:
 
     # Determine module verion
-    - task: GitVersion@5
+    - task: UseGitVersion@5
       inputs:
-        runtime: 'core'
-      displayName: Determine Semantic Version
+        versionSpec: '5.x.x'
 
     # Set container verion to be Semantic Version
     - script: |
