@@ -23,7 +23,7 @@ stages:
   jobs:
   - job: Build
     steps:
-    
+
     # Determine module verion
     - task: GitVersion@5
       inputs:
@@ -49,8 +49,9 @@ stages:
         fillRegistryCredential: 'true'
 
     # Copy the generated manifest to the artifact staging directory
-    - shell: |
-      cp config/deployment.amd64.json $(Build.ArtifactStagingDirectory)
+    - script: |
+        cp config/deployment.amd64.json $(Build.ArtifactStagingDirectory)
+      displayName: Copy manifest to artifact directory
 
     # Publish the deployment manifest as a pipeline artifact
     - publish: $(Build.ArtifactStagingDirectory)
