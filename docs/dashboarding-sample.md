@@ -2,7 +2,7 @@
 
 ## About this sample
 
-As discussed in the [readme](/readme.md) for this repo, we created a sample implementation of our offline dashboarding architecture. As a significant percentage of our customers who need offline dashboarding are manufacturers, that is the use case we chose to implement. In particular, we show the necessary data collection, calculations, and visualization of the Overall Equipment Efficiency (OEE) metric, common to manufacturers. For a deep dive in the dashboard and calculations involved, please see [this document](manufacturing_kpis.md).
+As discussed in the [readme](/readme.md) for this repo, we created a sample implementation of our offline dashboarding architecture. As a significant percentage of our customers who need offline dashboarding are manufacturers, that is the use case we chose to implement. In particular, we show the necessary data collection, calculations, and visualization of the Overall Equipment Effectiveness (OEE) metric, common to manufacturers. For a deep dive in the dashboard and calculations involved, please see [this document](manufacturing_kpis.md).
 
 For guidance on how to customize the sample for other use cases, please see the [customization](#customizing-the-sample-for-other-use-cases) section below.
 
@@ -43,7 +43,7 @@ The offline dashboarding sample contains 5 modules:
 
 ## Understanding the sample data, calculations, and dashboard elements
 
-As mentioned in the introduction, our sample dashboard provides meaningful calculations of the Overall Equipment Efficiency (OEE) metric common to manufacturers. We recommend you review the [documentation](manufacturing_kpis.md) for those KPIs before proceeding to deploy the sample.
+As mentioned in the introduction, our sample dashboard provides meaningful calculations of the Overall Equipment Effectiveness (OEE) metric common to manufacturers. We recommend you review the [documentation](manufacturing_kpis.md) for those KPIs before proceeding to deploy the sample.
 
 ## Deployment of the sample
 
