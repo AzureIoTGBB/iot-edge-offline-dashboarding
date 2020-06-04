@@ -4,6 +4,7 @@ trigger:
   branches:
     include:
     - master
+    - devcontainer
   paths:
     include:
     - azure-pipelines.yml
