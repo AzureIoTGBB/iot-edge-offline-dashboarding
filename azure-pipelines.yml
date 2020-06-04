@@ -77,7 +77,7 @@ stages:
       displayName: Create Deployment
       inputs:
         action: Deploy to IoT Edge devices
-        deploymentFilePath: $(Pipeline.Workspace)/config/deployment.json
+        deploymentFilePath: $(Pipeline.Workspace)/config/deployment.amd64.json
         azureSubscription: $(azureSubscription)
         iothubname: jl-demo-iot-dev
         deploymentid: offline-dashboard
