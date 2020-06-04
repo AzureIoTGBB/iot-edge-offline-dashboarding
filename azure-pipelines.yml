@@ -1,4 +1,5 @@
 trigger:
+
   batch: true
   branches:
     include:
@@ -11,21 +12,22 @@ pr:
   autoCancel: true
 
 variables:
-  - group: edge-deployment-settings
-  - azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
-  - acrName: jldemoacrdev
-  - acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
-  - CONTAINER_VERSION_TAG: $(GitVersion.AssemblySemVer)
+  group: edge-deployment-settings
+  azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
+  acrName: jldemoacrdev
+  acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
+  CONTAINER_VERSION_TAG: $(GitVersion.AssemblySemVer)
    
 stages:
 - stage: Build
   jobs:
   - job: Build
     steps:
+
     # Determine module verion
-    - task: gittools.gitversion.gitversion-task.GitVersion@4
+    - task: GitVersion@5
       inputs:
-        preferBundledVersion: false
+        runtime: 'core'
       displayName: Determine Semantic Version
 
     # Build Modules
@@ -49,9 +51,9 @@ stages:
         displayName: Push Edge Modules
 
     # Copy the generated manifest to the artifact staging directory
-    - shell: |
+    - script: |
         cp config/deployment.amd64.json $(Build.ArtifactStagingDirectory)
-        
+      displayName: Copy manifest to artifact directory
 
     # Publish the deployment manifest as a pipeline artifact
     - publish: $(Build.ArtifactStagingDirectory)
