@@ -12,7 +12,7 @@ Smart Manufacturing provides new opportunities to improve inefficiencies across 
 
 Azure Industrial IoT provides hybrid-cloud based components to build the end to end industrial IoT platform to enable innovation and to optimize operational processes.
 
-Most manufacturers start their journey by providing visibility across machines, processes, lines amd factories through their unified industrial IoT platform. This is achieved by collecting data from manufacturing processes to provide end to end visibility.
+Most manufacturers start their journey by providing visibility across machines, processes, lines and factories through their unified industrial IoT platform. This is achieved by collecting data from manufacturing processes to provide end to end visibility.
 
 Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning or engineers monitoring and fine-tuning production phases.
 
@@ -62,3 +62,7 @@ Once you have a functioning IoT Edge environment, we are providing several optio
 Each of the components in the solution are driven by configuration files contained in and deployed via their corresponding Docker images. As seen later in the module deployment, we use an Azure DevOps pipeline to automate creation of the Docker images and inclusion of the correct configuration files for each solution component.  This allows you to update the dashboard, for example, by updating the corresponding dashboard configuration file and executing the pipeline.
 
 TODO:  content coming....
+
+### Connecting OPC Servers
+
+### Connecting Other Devices
