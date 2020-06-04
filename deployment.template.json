@@ -35,9 +35,21 @@
               "createOptions": {
                 "HostConfig": {
                   "PortBindings": {
-                    "5671/tcp": [{"HostPort": "5671"}],
-                    "8883/tcp": [{"HostPort": "8883"}],
-                    "443/tcp": [{"HostPort": "443"}]
+                    "5671/tcp": [
+                      {
+                        "HostPort": "5671"
+                      }
+                    ],
+                    "8883/tcp": [
+                      {
+                        "HostPort": "8883"
+                      }
+                    ],
+                    "443/tcp": [
+                      {
+                        "HostPort": "443"
+                      }
+                    ]
                   }
                 }
               }
@@ -50,7 +62,16 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/influxdb:${INFLUXDB_TAG}",
+              "image": "${MODULES.influxdb}",
+              "createOptions": {}
+            }
+          },
+          "edge-to-influxdb": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.edge-to-influxdb}",
               "createOptions": {}
             }
           },
@@ -59,25 +80,25 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/grafana:${GRAFANA_TAG}",
+              "image": "${MODULES.grafana}",
               "createOptions": {}
             }
           },
-          "node-red": {
+          "opc-publisher": {
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/node-red:${NODE_RED_TAG}",
+              "image": "${MODULES.opc-publisher}",
               "createOptions": {}
             }
           },
-          "opc-ua-server": {
+          "opc-simulator": {
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${CONTAINER_REGISTRY_ADDRESS}/offline-dashboarding/opc-ua-server:${OPC_UA_SERVER_TAG}",
+              "image": "${MODULES.opc-simulator}",
               "createOptions": {}
             }
           }
@@ -87,7 +108,9 @@
     "$edgeHub": {
       "properties.desired": {
         "schemaVersion": "1.0",
-        "routes": {},
+        "routes": {
+          "Default": "FROM /messages/* INTO $upstream"
+        },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
         }
