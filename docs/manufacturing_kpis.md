@@ -31,7 +31,7 @@ Availability = (Running Time)/(Running Time + Idle Time)
 
 The unit of KPI is percentage.
 
-**OEE (Operational Equipment Efficiency):** Finally, OEE is a higher level KPI that is calculated from other KPIs above and depicts overall efficiency of equipment. The calculation formula is
+**OEE (Operational Equipment Effectiveness):** Finally, OEE is a higher level KPI that is calculated from other KPIs above and depicts overall efficiency of equipment and manufacturing processes. The calculation formula is
 
 ```html
 OEE = Availability x Quality x Performance
