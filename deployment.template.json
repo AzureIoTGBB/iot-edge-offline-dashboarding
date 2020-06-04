@@ -11,9 +11,9 @@
             "loggingOptions": "",
             "registryCredentials": {
               "default": {
-                "username": "${CONTAINER_REGISTRY_NAME}",
+                "username": "${CONTAINER_REGISTRY_USERNAME}",
                 "password": "${CONTAINER_REGISTRY_PASSWORD}",
-                "address": "${CONTAINER_REGISTRY_NAME}.azurecr.io"
+                "address": "${CONTAINER_REGISTRY_ADDRESS}"
               }
             }
           }
@@ -63,7 +63,20 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.influxdb}",
-              "createOptions": {}
+              "createOptions": {
+                "HostConfig": {
+                  "Binds": [
+                    "/influxdata:/var/lib/influxdb"
+                  ],
+                  "PortBindings": {
+                    "8086/tcp": [
+                      {
+                        "HostPort": "8086"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "edge-to-influxdb": {
@@ -72,7 +85,17 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.edge-to-influxdb}",
-              "createOptions": {}
+              "createOptions": {
+                "HostConfig": {
+                  "PortBindings": {
+                    "1880/tcp": [
+                      {
+                        "HostPort": "1881"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "grafana": {
@@ -81,7 +104,23 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.grafana}",
-              "createOptions": {}
+              "createOptions": {
+                "Env": [
+                  "GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}"
+                ],
+                "Volumes": {
+                  "/etc/grafana/provisioning": {}
+                },
+                "HostConfig": {
+                  "PortBindings": {
+                    "3000/tcp": [
+                      {
+                        "HostPort": "3000"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "opc-publisher": {
@@ -90,7 +129,13 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.opc-publisher}",
-              "createOptions": {}
+              "createOptions": {
+                "Hostname": "publisher",
+                "Cmd": [
+                  "--pf=/app/pn.json",
+                  "--aa"
+                ]
+              }
             }
           },
           "opc-simulator": {
@@ -99,7 +144,17 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.opc-simulator}",
-              "createOptions": {}
+              "createOptions": {
+                "HostConfig": {
+                  "PortBindings": {
+                    "1880/tcp": [
+                      {
+                        "HostPort": "1880"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           }
         }

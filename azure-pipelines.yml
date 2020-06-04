@@ -12,50 +12,43 @@ pr:
 
 variables:
   - group: edge-deployment-settings
-
-# Trigger a deployment on any pipeline completion
-resources:         
-  pipelines:
-  - pipeline: node_red
-    source: module-node-red
-    trigger: 
-      branches:
-        include: 
-        - master
-  - pipeline: grafana
-    source: module-grafana
-    trigger: 
-      branches:
-        include: 
-        - master
-  - pipeline: influxdb
-    source: module-influxdb
-    trigger: 
-      branches:
-        include: 
-        - master
-  - pipeline: opcuaserver
-    source: module-opc-ua-server
-    trigger: 
-      branches:
-        include: 
-        - master
+  - azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
+  - acrName: jldemoacrdev
+  - acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
+  - CONTAINER_VERSION_TAG: $(GitVersion.AssemblySemVer)
    
 stages:
 - stage: Build
   jobs:
   - job: Build
     steps:
-
-    # Generate the deployment manifest
-    - task: AzureIoTEdge@2
-      displayName: Generate deployment manifest
+    # Determine module verion
+    - task: gittools.gitversion.gitversion-task.GitVersion@4
       inputs:
-        action: Generate deployment manifest
-        templateFilePath: deployment.template.json
+        preferBundledVersion: false
+      displayName: Determine Semantic Version
+
+    # Build Modules
+    - task: AzureIoTEdge@2
+      inputs:
+        action: 'Build module images'
+        templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
-        deploymentManifestOutputPath: $(Build.ArtifactStagingDirectory)/deployment.json
-        validateGeneratedDeploymentManifest: 'true'
+    
+    # Push Modules
+    - task: AzureIoTEdge@2
+      inputs:
+        action: 'Push module images'
+        containerregistrytype: 'Azure Container Registry'
+        azureSubscriptionEndpoint: $(azureSubscription)
+        azureContainerRegistry: '{"loginServer":"$(acrName).azurecr.io", "id" : "$(acrResourcePath)"}'
+        templateFilePath: 'deployment.template.json'
+        defaultPlatform: 'amd64'
+        fillRegistryCredential: 'true'
+
+    # Copy the generated manifest to the artifact staging directory
+    - shell: |
+      cp config/deployment.amd64.json $(Build.ArtifactStagingDirectory)
 
     # Publish the deployment manifest as a pipeline artifact
     - publish: $(Build.ArtifactStagingDirectory)
@@ -69,7 +62,7 @@ stages:
     - download: current
       artifact: config
 
-    # Deploy to edge
+    # Deploy to all edge devices
     - task: AzureIoTEdge@2
       displayName: Create Deployment
       inputs:
