@@ -11,11 +11,11 @@ pr:
   autoCancel: true
 
 variables:
-  - group: edge-deployment-settings
-  - azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
-  - acrName: jldemoacrdev
-  - acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
-  - CONTAINER_VERSION_TAG: $(GitVersion.AssemblySemVer)
+  group: edge-deployment-settings
+  azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
+  acrName: jldemoacrdev
+  acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
+  CONTAINER_VERSION_TAG: $(GitVersion.AssemblySemVer)
    
 stages:
 - stage: Build
