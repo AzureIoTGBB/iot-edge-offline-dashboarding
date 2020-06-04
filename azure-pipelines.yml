@@ -34,6 +34,7 @@ stages:
         action: 'Build module images'
         templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
+      displayName: Build Edge Modules
     
     # Push Modules
     - task: AzureIoTEdge@2
@@ -45,10 +46,12 @@ stages:
         templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
         fillRegistryCredential: 'true'
+        displayName: Push Edge Modules
 
     # Copy the generated manifest to the artifact staging directory
     - shell: |
-      cp config/deployment.amd64.json $(Build.ArtifactStagingDirectory)
+        cp config/deployment.amd64.json $(Build.ArtifactStagingDirectory)
+        
 
     # Publish the deployment manifest as a pipeline artifact
     - publish: $(Build.ArtifactStagingDirectory)
