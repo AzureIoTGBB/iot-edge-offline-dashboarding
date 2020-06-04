@@ -48,7 +48,7 @@ stages:
         templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
         fillRegistryCredential: 'true'
-        displayName: Push Edge Modules
+      displayName: Push Edge Modules
 
     # Copy the generated manifest to the artifact staging directory
     - script: |
