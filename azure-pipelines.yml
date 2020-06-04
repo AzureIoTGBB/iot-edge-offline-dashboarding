@@ -1,4 +1,5 @@
 trigger:
+
   batch: true
   branches:
     include:
@@ -22,10 +23,11 @@ stages:
   jobs:
   - job: Build
     steps:
+    
     # Determine module verion
-    - task: gittools.gitversion.gitversion-task.GitVersion@4
+    - task: GitVersion@5
       inputs:
-        preferBundledVersion: false
+        runtime: 'core'
       displayName: Determine Semantic Version
 
     # Build Modules
