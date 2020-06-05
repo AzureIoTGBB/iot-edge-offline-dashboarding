@@ -12,6 +12,9 @@ trigger:
 pr:
   autoCancel: true
 
+variables:
+  CONTAINER_REGISTRY_ADDRESS: $(ACR_NAME).azurecr.io
+
 stages:
 - stage: Build
   jobs:
@@ -42,7 +45,7 @@ stages:
         action: 'Push module images'
         containerregistrytype: 'Azure Container Registry'
         azureSubscriptionEndpoint: $(AZURE_SERVICE_CONNECTION)
-        azureContainerRegistry: '{"loginServer":"$(ACR_NAME).azurecr.io", "id" : "/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(ACR_RESOURCE_GROUP)/providers/Microsoft.ContainerRegistry/registries/$(ACR_NAME)"}'
+        azureContainerRegistry: '{"loginServer":"$(CONTAINER_REGISTRY_ADDRESS)", "id" : "/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(ACR_RESOURCE_GROUP)/providers/Microsoft.ContainerRegistry/registries/$(ACR_NAME)"}'
         templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
         fillRegistryCredential: 'true'
