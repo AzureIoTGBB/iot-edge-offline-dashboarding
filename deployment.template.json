@@ -164,7 +164,8 @@
       "properties.desired": {
         "schemaVersion": "1.0",
         "routes": {
-          "Default": "FROM /messages/* INTO $upstream"
+          "cloud": "FROM /messages/* INTO $upstream",
+          "opc": "FROM /messages/modules/opc-publisher/* INTO BrokeredEndpoint(\"/modules/edge-to-influxdb/inputs/input1\")"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200

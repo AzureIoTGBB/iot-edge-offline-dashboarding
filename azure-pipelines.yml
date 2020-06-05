@@ -1,24 +1,19 @@
 trigger:
-
   batch: true
   branches:
     include:
     - master
-    - devcontainer
   paths:
-    include:
-    - azure-pipelines.yml
+    exclude:
+    - readme.md
+    - docs/*
+    - media/*
 
 pr:
   autoCancel: true
 
 variables:
-  group: edge-deployment-settings
-  azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
-  acrName: jldemoacrdev
-  acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
-  CONTAINER_REGISTRY_ADDRESS: $(acrName).azurecr.io
-  GRAFANA_ADMIN_PASSWORD: 
+  CONTAINER_REGISTRY_ADDRESS: $(ACR_NAME).azurecr.io
 
 stages:
 - stage: Build
@@ -49,8 +44,8 @@ stages:
       inputs:
         action: 'Push module images'
         containerregistrytype: 'Azure Container Registry'
-        azureSubscriptionEndpoint: $(azureSubscription)
-        azureContainerRegistry: '{"loginServer":"$(acrName).azurecr.io", "id" : "$(acrResourcePath)"}'
+        azureSubscriptionEndpoint: $(AZURE_SERVICE_CONNECTION)
+        azureContainerRegistry: '{"loginServer":"$(CONTAINER_REGISTRY_ADDRESS)", "id" : "/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(ACR_RESOURCE_GROUP)/providers/Microsoft.ContainerRegistry/registries/$(ACR_NAME)"}'
         templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
         fillRegistryCredential: 'true'
@@ -79,8 +74,8 @@ stages:
       inputs:
         action: Deploy to IoT Edge devices
         deploymentFilePath: $(Pipeline.Workspace)/config/deployment.amd64.json
-        azureSubscription: $(azureSubscription)
-        iothubname: jl-demo-iot-dev
+        azureSubscription: $(AZURE_SERVICE_CONNECTION)
+        iothubname: $(IOT_HUB_NAME)
         deploymentid: offline-dashboard
         priority: '10'
         deviceOption: Multiple Devices
