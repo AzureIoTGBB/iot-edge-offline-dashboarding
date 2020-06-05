@@ -12,13 +12,6 @@ trigger:
 pr:
   autoCancel: true
 
-variables:
-  group: edge-deployment-settings
-  azureSubscription: "JL - IoT GBB(2033cb47-dd48-4b84-a45d-a58da7fd163a)"
-  acrName: jldemoacrdev
-  acrResourcePath: /subscriptions/2033cb47-dd48-4b84-a45d-a58da7fd163a/resourceGroups/jl-demo-dev-rg/providers/Microsoft.ContainerRegistry/registries/jldemoacrdev
-  CONTAINER_REGISTRY_ADDRESS: $(acrName).azurecr.io
-
 stages:
 - stage: Build
   jobs:
@@ -48,8 +41,8 @@ stages:
       inputs:
         action: 'Push module images'
         containerregistrytype: 'Azure Container Registry'
-        azureSubscriptionEndpoint: $(azureSubscription)
-        azureContainerRegistry: '{"loginServer":"$(acrName).azurecr.io", "id" : "$(acrResourcePath)"}'
+        azureSubscriptionEndpoint: $(AZURE_SERVICE_CONNECTION)
+        azureContainerRegistry: '{"loginServer":"$(ACR_NAME).azurecr.io", "id" : "/subscriptions/$(AZURE_SUBSCRIPTION_ID)/resourceGroups/$(ACR_RESOURCE_GROUP)/providers/Microsoft.ContainerRegistry/registries/$(ACR_NAME)"}'
         templateFilePath: 'deployment.template.json'
         defaultPlatform: 'amd64'
         fillRegistryCredential: 'true'
