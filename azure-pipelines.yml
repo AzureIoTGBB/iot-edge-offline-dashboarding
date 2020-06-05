@@ -1,13 +1,13 @@
 trigger:
-
   batch: true
   branches:
     include:
     - master
-    - devcontainer
   paths:
-    include:
-    - azure-pipelines.yml
+    exclude:
+    - readme.md
+    - docs/*
+    - media/*
 
 pr:
   autoCancel: true
