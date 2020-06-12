@@ -15,14 +15,14 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
-  "iteration": 1590525063242,
+  "id": 13,
+  "iteration": 1591994538246,
   "links": [],
   "panels": [
     {
       "datasource": "myinfluxdb",
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 5,
         "x": 0,
         "y": 0
@@ -85,7 +85,7 @@
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 19,
         "x": 5,
         "y": 0
@@ -201,10 +201,10 @@
     {
       "datasource": "myinfluxdb",
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 5,
         "x": 0,
-        "y": 8
+        "y": 5
       },
       "id": 17,
       "options": {
@@ -264,10 +264,10 @@
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 19,
         "x": 5,
-        "y": 8
+        "y": 5
       },
       "hiddenSeries": false,
       "id": 7,
@@ -391,10 +391,10 @@
     {
       "datasource": "myinfluxdb",
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 5,
         "x": 0,
-        "y": 16
+        "y": 10
       },
       "id": 14,
       "options": {
@@ -456,10 +456,10 @@
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 19,
         "x": 5,
-        "y": 16
+        "y": 10
       },
       "hiddenSeries": false,
       "id": 20,
@@ -592,10 +592,10 @@
     {
       "datasource": "myinfluxdb",
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 5,
         "x": 0,
-        "y": 24
+        "y": 15
       },
       "id": 18,
       "options": {
@@ -655,10 +655,10 @@
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 19,
         "x": 5,
-        "y": 24
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 9,
@@ -785,7 +785,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "1400",
           "value": "1400"
         },
@@ -810,7 +810,7 @@
           "value": "urn:edgevm3.internal.cloudapp.net:OPC-Site-01"
         },
         "datasource": "myinfluxdb",
-        "definition": "from(bucket: \"telemetry\")\n  |> range($range)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n\n|> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
+        "definition": "from(bucket: \"telemetry\")\n  |> range($range)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n  |> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
         "hide": 0,
         "includeAll": false,
         "index": -1,
@@ -818,7 +818,7 @@
         "multi": false,
         "name": "Source",
         "options": [],
-        "query": "from(bucket: \"telemetry\")\n  |> range($range)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n\n|> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
+        "query": "from(bucket: \"telemetry\")\n  |> range($range)\n  |> filter(fn: (r) =>\n    r._measurement == \"DeviceData\"\n  )\n  |> keep(columns:[\"Source\"])\n  |> distinct(column: \"Source\")\n\n\n",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -848,9 +848,9 @@
   },
   "timezone": "",
   "title": "Site Level Performance",
-  "uid": "WI5udGeWz",
+  "uid": "MVQk9siMk",
   "variables": {
     "list": []
   },
-  "version": 19
+  "version": 5
 }
