@@ -40,14 +40,7 @@ sudo docker push {registry}/opc-simulator:1.0
 
 Now that we have all five module images in a container registry, we can deploy instances of these module images to an edge machine using IoT Hub.
 
-First, since the edge machine will need persistent storage for the InfluxDB database, we need to create a directory for the module to bind to.  Use the ssh command to login into your edge machine and run the following.
-
-```bash
-sudo mkdir /influxdata
-sudo chmod 777 -R /influxdata
-```
-
-Next, you need to deploy the modules to the edge device.  Navigate to your IoT Hub in the Azure portal go to IoT Edge.  You should see your edge device.  Click on your edge device and then click "Set Modules."  In the Container Registry Credentials, put the name, address, user name and password of the registry container you used in the "Build Module Images" section of this readme.
+Navigate to your IoT Hub in the Azure portal go to IoT Edge.  You should see your edge device.  Click on your edge device and then click "Set Modules."  In the Container Registry Credentials, put the name, address, user name and password of the registry container you used in the "Build Module Images" section of this readme.
 
 In the IoT Edge Modules section, click the "+ Add" button and select "IoT Edge Module."  For IoT Edge Module Name put "edge-to-influxdb" and for Image URI put {registry}/edge-to-influxdb:1.0.  Be sure to replace {registry} with your own registry address.  Switch to the "Container Create Options and place the following JSON into the create options field.
 
@@ -161,24 +154,4 @@ You are now ready to deploy the modules to your edge machine.  Click the "Review
 
 ![Edge Success](../media/edge-success.png)
 
-### View Grafana Dashboard
-
-Now that the edge modules are successfully running, you can view the running Grafana dashboard.  First, make sure you have opened port 3000 on your edge VM.  
-
-az vm open-port --resource-group {resource_group} --name {edge_VM_name} --port 3000
-
-Next, replace the {ip-address} in the following link with your own VM ip address and navigate to that site:
-
-```http
-http://{ip-address}:3000/
-```
-
-Login to Grafana using "admin" as user name and the password you specified in the "GF_SECURITY_ADMIN_PASSWORD" environment variable you created in grafana module options.  
-
-> NOTE:  There is currently a bug in this sample. For some reason, the data source details are deployed correctly, but not 'enabled'. This will cause your dashboard to complain with an error and not show any data.  
->
-> For now, once you have logged into Grafana, click the gear icon on the left-hand panel and select data sources.  You should see the "myinfluxdb" data source.  Click on it to navigate into the settings.  Click the "Save & Test" button at the bottom.  If things are working properly you should see "Data source connected and database found."
-
-Next, hover over the dashboard icon in the left side panel and click "Manage."  You should see the "Site Level Performance" dashboard under the General folder.  Click on it to open the dashboard.  You should see the fully running dashboard like below:
-
-![Grafana Dashboard](../media/grafana-dash.png)
+Once you have confirmed your modules are running, return to the [View the Grafana Dashboards](dashboarding-sample.md#view-the-grafana-dashboard) section to see your sample dashboards.

@@ -1,5 +1,7 @@
 # Prepping an Azure VM to run IoT Edge
 
+If you already have a functioning, AMD64-Linux-based, IoT Edge box, you can skip to the [dashboarding sample prep](#dashboard-solution-preparation) section.
+
 ## Azure CLI
 
 These instructions leverage the Azure Command Line Interface (CLI). To install the Azure CLI for your environment, follow the instructions [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for your OS. Alternately, in the Azure Portal, you can use an [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart?view=azure-cli-latest) which has the CLI pre-installed (stop before the "Create a resource group" section).
@@ -62,4 +64,23 @@ Once this command finishes, SSH into your VM using the 'azureuser' user name and
 iotedge list
 ```
 
-You should see the edgeAgent module running, indicating a successful setup.  You can now return to the [dashboarding sample](dashboarding-sample.md) document and pick a deployment strategy
+You should see the edgeAgent module running, indicating a successful setup.  
+
+## Dashboard solution preparation
+
+Before we leave the Edge VM side of things, there are a couple of prep items that need to be done besides installing and configuring IoT Edge.  
+
+First, since the edge machine will need persistent storage for the InfluxDB database, we need to create a directory for the module to bind to.  Use the ssh command to login into your edge machine and run the following.
+
+```bash
+sudo mkdir /influxdata
+sudo chmod 777 -R /influxdata
+```
+
+Next, we need to open the Grafana port, which by default is port 3000, on our VM.  Note that you likely wouldn't do this in production, as your "offline" clients will probably be on the same network as your IoT Edge box.  We only need to do this because we are running/testing on a VM in Azure.  From the Azure CLI, run the following command to open access
+
+```bash
+az vm open-port --resource-group {resource group} --name {edge vm name} --port 3000
+```
+
+You can now return to the [dashboarding sample](dashboarding-sample.md#deployment-of-the-sample) document and pick a deployment strategy
