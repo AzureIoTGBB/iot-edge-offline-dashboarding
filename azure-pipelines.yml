@@ -74,7 +74,7 @@ stages:
       inputs:
         action: Deploy to IoT Edge devices
         deploymentFilePath: $(Pipeline.Workspace)/config/deployment.amd64.json
-        azureSubscription: $(AZURE_SERVICE_CONNECTION)
+        azureSubscription: $(AZURE_SERVICE_CONNECTION2)
         iothubname: $(IOT_HUB_NAME)
         deploymentid: offline-dashboard
         priority: '10'
