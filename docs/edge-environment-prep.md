@@ -22,11 +22,19 @@ Create a resource group to manage all the resources used in this solution
 az group create --name {resource_group} --location {datacenter_location}
 ```
 
+#### Create Azure Container Registry
+
+In this sample, we will be building docker images for each module and pushing them to a docker container registry. If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab teh username and password, you'll need it later.
+
+#### Create IoT Hub
+
 Use following to create the IoT Hub resource. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux>
 
 ```bash
 az iot hub create  --resource-group {resource_group} --name {hub_name} --sku S1
 ```
+
+#### Create IoT Edge device identity
 
 Create a device identity for your IoT Edge device so that it can communicate with your IoT Hub. The device identity lives in the cloud, and you use a unique device connection string to associate a physical device to a device identity. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
 
@@ -43,6 +51,8 @@ az iot hub device-identity show-connection-string --device-id myEdgeDevice --hub
 Copy the value of the `connectionString` key from the JSON output and save it. This value is the device connection string. You'll use this connection string to configure the IoT Edge runtime in the next section.
 
 ![Retrieve connection string from CLI output](../media/retrieve-connection-string.png)
+
+#### Create and configure IoT Edge VM
 
 We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
 
