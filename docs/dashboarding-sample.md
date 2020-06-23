@@ -73,6 +73,8 @@ Next, hover over the dashboard icon in the left side panel and click "Manage."  
 
 ![Grafana Dashboard](/media/grafana-dash.png)
 
+NOTE: It may take upwards of 10 minutes for all graphs to show correctly since they rely on a history of data.
+
 Feel free to explore the other dashboards available.
 
 ## Customizing the sample
