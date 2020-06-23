@@ -27,7 +27,7 @@ When opened, you should receive another prompt noting that the repository includ
 
 After the re-open, you will see a pop-up indication that the development container is being started.  You can click on the notification to see the progress in an output window. You will also get asked if it is ok to share the repo folder and the .azure folder with Docker. Do so.
 
-After several minutes, the project will be opened in the development container. 
+After several minutes, the project will be opened in the development container.
 
 ## Sample development configuation
 
@@ -83,7 +83,7 @@ The docker images for the sample will be built and pushed to your specified cont
 
 ## Deploy to IoT Edge
 
-To deploy our new images to your IOT Edge box, 
+To deploy our new images to your IOT Edge box,
 
 - expand the "AZURE IOT HUB" pane from the bottom left corner of VS Code
 - Navigate to your IoT Edge box

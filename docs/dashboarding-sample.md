@@ -75,10 +75,17 @@ Next, hover over the dashboard icon in the left side panel and click "Manage."  
 
 Feel free to explore the other dashboards available.
 
-## Customizing the sample for other use cases
+## Customizing the sample
 
 Inevitably, you will likely want to customize the sample solution to fit your unique business needs.  
 
 If your use case is manufacturing/OEE and you are looking to change the data sources (perhaps from the simulator to real equipment),this [document](customize-sample-oee.md) discusses the process and options.
 
 If your use case is something entirely different, this [document](customize-sample-other.md) gives a high level overview of the process involved.
+
+## Known issues
+
+There are a few known issues with the sample to be aware of
+
+* When deploying grafana, the pre-configured datasource (myinfluxdb) is property configured, but that configuration isn't 'active'.  You'll see in the deployment information above that you have to manually navigate there and click "Save & Test" to activate it before your dashboards will work
+* The deployment of Grafana doesn't currently work with backing, host-based storage.  This means that any changes made to Grafana (users, dashboards, etc) are lost if the container is removed or replaced

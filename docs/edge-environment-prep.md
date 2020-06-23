@@ -83,4 +83,10 @@ Next, we need to open the Grafana port, which by default is port 3000, on our VM
 az vm open-port --resource-group {resource group} --name {edge vm name} --port 3000
 ```
 
+Depending on your azure environment, you may need to add a rule to the subnet as well.  You can do that by running
+
+```bash
+az vm open-port --resource-group {resource group} --name {edge vm name} --apply-to-subnet --port 3000
+```
+
 You can now return to the [dashboarding sample](dashboarding-sample.md#deployment-of-the-sample) document and pick a deployment strategy
