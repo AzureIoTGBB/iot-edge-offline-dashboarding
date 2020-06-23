@@ -61,7 +61,7 @@ CONTAINER_VERSION_TAG={image tag}
 
 - The first three values are the container registry values for your container registry. If you use/created a Azure Container Registry, these can be found on the Access Keys blade
 - The GRAFANA_ADMIN_PASSWORD is the password that you wish to set as the administrative password on the grafana dashboard site we are deploying (the user-id is 'admin')
-- the CONTAINER_VERSION_TAG is the version tag we want to use on the docker images we create  (e.g.  '0.0.1' or '1.0.0', etc).  We will use this as the version tag on all the images that we create, with the processor architecture appended  (e.g. myacr.azurecr.io/opc-simulator:0.0.1-amd64)
+- the CONTAINER_VERSION_TAG is the version tag we want to use on the docker images we create  (e.g.  '0.0.1' or '1.0.0', etc).  We will use this as the version tag on all the images that we create, with the processor architecture appended  (e.g. myacr.azurecr.io/opcsimulator:0.0.1-amd64)
 
 Save the .env file
 

@@ -1,6 +1,6 @@
     [
         {
-            "EndpointUrl": "opc.tcp://opc-simulator:54845/OPCUA/Site1",
+            "EndpointUrl": "opc.tcp://opcsimulator:54845/OPCUA/Site1",
             "UseSecurity": false,
             "OpcNodes": [
                 {
@@ -24,7 +24,7 @@
             ]
         },
         {
-            "EndpointUrl": "opc.tcp://opc-simulator:54855/OPCUA/Site2",
+            "EndpointUrl": "opc.tcp://opcsimulator:54855/OPCUA/Site2",
             "UseSecurity": false,
             "OpcNodes": [
                 {

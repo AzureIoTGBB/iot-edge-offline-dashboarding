@@ -15,9 +15,9 @@ Next, we need to build the image for each module and push it to a docker contain
 ```bash
 sudo docker login {registry}
 
-cd iot-edge-offline-dashboarding/modules/edge-to-influxdb
-sudo docker build --tag {registry}/edge-to-influxdb:1.0 .
-sudo docker push {registry}/edge-to-influxdb:1.0
+cd iot-edge-offline-dashboarding/modules/edgetoinfluxdb
+sudo docker build --tag {registry}/edgetoinfluxdb:1.0 .
+sudo docker push {registry}/edgetoinfluxdb:1.0
 
 cd ../grafana
 sudo docker build --tag {registry}/grafana:1.0 .
@@ -27,13 +27,13 @@ cd ../influxdb
 sudo docker build --tag {registry}/influxdb:1.0 .
 sudo docker push {registry}/influxdb:1.0
 
-cd ../opc-publisher
-sudo docker build --tag {registry}/opc-publisher:1.0 .
-sudo docker push {registry}/opc-publisher:1.0
+cd ../opcpublisher
+sudo docker build --tag {registry}/opcpublisher:1.0 .
+sudo docker push {registry}/opcpublisher:1.0
 
-cd ../opc-simulator
-sudo docker build --tag {registry}/opc-simulator:1.0 .
-sudo docker push {registry}/opc-simulator:1.0
+cd ../opcsimulator
+sudo docker build --tag {registry}/opcsimulator:1.0 .
+sudo docker push {registry}/opcsimulator:1.0
 ```
 
 ## Deploy Modules
@@ -42,7 +42,7 @@ Now that we have all five module images in a container registry, we can deploy i
 
 Navigate to your IoT Hub in the Azure portal go to IoT Edge.  You should see your edge device.  Click on your edge device and then click "Set Modules."  In the Container Registry Credentials, put the name, address, user name and password of the registry container you used in the "Build Module Images" section of this readme.
 
-In the IoT Edge Modules section, click the "+ Add" button and select "IoT Edge Module."  For IoT Edge Module Name put "edge-to-influxdb" and for Image URI put {registry}/edge-to-influxdb:1.0.  Be sure to replace {registry} with your own registry address.  Switch to the "Container Create Options and place the following JSON into the create options field.
+In the IoT Edge Modules section, click the "+ Add" button and select "IoT Edge Module."  For IoT Edge Module Name put "edgetoinfluxdb" and for Image URI put {registry}/edgetoinfluxdb:1.0.  Be sure to replace {registry} with your own registry address.  Switch to the "Container Create Options and place the following JSON into the create options field.
 
 ```json
 {
@@ -104,11 +104,11 @@ Container Create Options:
 }
 ```
 
-Module opc-publisher:
+Module opcpublisher:
 
 ```json
-IoT Edge Module Name: opc-publisher
-Image URI: {registry}/opc-publisher:1.0
+IoT Edge Module Name: opcpublisher
+Image URI: {registry}/opcpublisher:1.0
 Container Create Options:
 {
     "Hostname": "publisher",
@@ -119,11 +119,11 @@ Container Create Options:
 }
 ```
 
-Module opc-simulator:
+Module opcsimulator:
 
 ```json
-IoT Edge Module Name: opc-simulator
-Image URI: {registry}/opc-simulator:1.0
+IoT Edge Module Name: opcsimulator
+Image URI: {registry}/opcsimulator:1.0
 Container Create Options:
 {
     "HostConfig": {
@@ -145,7 +145,7 @@ You should now have the following in your set modules dialog:
 Next, we need to establish a route in the "Routes" tab.  Click on the "Routes" tab and add the following route with the name "opc":
 
 ```bash
-FROM /messages/modules/opc-publisher/* INTO BrokeredEndpoint("/modules/edge-to-influxdb/inputs/input1")
+FROM /messages/modules/opcpublisher/* INTO BrokeredEndpoint("/modules/edgetoinfluxdb/inputs/input1")
 ```
 
 ![Edge Routes](../media/edge-routes.png)

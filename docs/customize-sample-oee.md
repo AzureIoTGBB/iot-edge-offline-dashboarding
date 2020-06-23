@@ -14,7 +14,7 @@ Each of the components in the solution are driven by configuration files contain
 ```json
  [
      {
-      "EndpointUrl": "opc.tcp://opc-simulator:54845/OPCUA/Site1",
+      "EndpointUrl": "opc.tcp://opcsimulator:54845/OPCUA/Site1",
        "UseSecurity": false,
        "OpcNodes": [
         {
@@ -38,7 +38,7 @@ Each of the components in the solution are driven by configuration files contain
       ]
     },
     {
-      "EndpointUrl": "opc.tcp://opc-simulator:54855/OPCUA/Site2",
+      "EndpointUrl": "opc.tcp://opcsimulator:54855/OPCUA/Site2",
       "UseSecurity": false,
       "OpcNodes": [
         {
@@ -72,7 +72,7 @@ DROP MEASUREMENT DeviceData
 
 Note that edge-to-flux flow automatically creates measurement if it does not exists.
 
-- Remove "opc-simulator" module from deployment
+- Remove "opcsimulator" module from deployment
 
 ### Adding a new asset (basic scenario)
 
@@ -89,12 +89,12 @@ If you have an OPC Server installed and connected to a real asset/equipment and 
 
 #### Modify publishedNodes.json file
 
-publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publisher module. The file can be found at modules\opc-publisher folder.  By default publishedNodes.json file lists two simulators and 3 nodes from each simulator:
+publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publisher module. The file can be found at modules\opcpublisher folder.  By default publishedNodes.json file lists two simulators and 3 nodes from each simulator:
 
 ```json
   [
      {
-      "EndpointUrl": "opc.tcp://opc-simulator:54845/OPCUA/Site1",
+      "EndpointUrl": "opc.tcp://opcsimulator:54845/OPCUA/Site1",
        "UseSecurity": false,
        "OpcNodes": [
         {
@@ -118,7 +118,7 @@ publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publishe
       ]
     },
     {
-      "EndpointUrl": "opc.tcp://opc-simulator:54855/OPCUA/Site2",
+      "EndpointUrl": "opc.tcp://opcsimulator:54855/OPCUA/Site2",
       "UseSecurity": false,
       "OpcNodes": [
         {
@@ -207,7 +207,7 @@ After modification, save dashboard JSON file (dashboard->settings->JSON Model) u
 
 #### Modify publishedNodes.json file
 
- publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publisher module. The file can be found at modules\opc-publisher folder. You may want to remove simulator as described above before moving forward.
+ publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publisher module. The file can be found at modules\opcpublisher folder. You may want to remove simulator as described above before moving forward.
 
 Add new node definitions including any security settings you have configured. Below sample uses "UseSecurity: false" setting which is not recommended in production environments.
 

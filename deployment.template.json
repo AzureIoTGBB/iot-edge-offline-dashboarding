@@ -79,12 +79,12 @@
               }
             }
           },
-          "edge-to-influxdb": {
+          "edgetoinfluxdb": {
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${MODULES.edge-to-influxdb}",
+              "image": "${MODULES.edgetoinfluxdb}",
               "createOptions": {
                 "HostConfig": {
                   "PortBindings": {
@@ -123,12 +123,12 @@
               }
             }
           },
-          "opc-publisher": {
+          "opcpublisher": {
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${MODULES.opc-publisher}",
+              "image": "${MODULES.opcpublisher}",
               "createOptions": {
                 "Hostname": "publisher",
                 "Cmd": [
@@ -138,12 +138,12 @@
               }
             }
           },
-          "opc-simulator": {
+          "opcsimulator": {
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${MODULES.opc-simulator}",
+              "image": "${MODULES.opcsimulator}",
               "createOptions": {
                 "HostConfig": {
                   "PortBindings": {
@@ -165,7 +165,7 @@
         "schemaVersion": "1.0",
         "routes": {
           "cloud": "FROM /messages/* INTO $upstream",
-          "opc": "FROM /messages/modules/opc-publisher/* INTO BrokeredEndpoint(\"/modules/edge-to-influxdb/inputs/input1\")"
+          "opc": "FROM /messages/modules/opcpublisher/* INTO BrokeredEndpoint(\"/modules/edgetoinfluxdb/inputs/input1\")"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
