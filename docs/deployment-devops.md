@@ -15,7 +15,9 @@ To create the tag, navigate to your IoT Hub and choose "IoT Edge" from the left 
 (((rest of device twin removed for brevity)))
 
 "tags":
-    {"dashboard":true}
+    {"dashboard":true},
+
+(((rest of device twin removed for brevity)))
 }
 ```
 

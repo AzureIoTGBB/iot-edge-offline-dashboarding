@@ -2,11 +2,23 @@
 
 The process for customizing or re-using the sample for other use cases will, obviously, depend on the details of the use case.  However, some high level guidance can be found below.
 
+## Understanding the current code and architecture
+
+One key to customization of the solution is gaining a good understanding of how it works. Reading all the documentation is good, but like most samples "the truth is in the code"
+
+Deploying the solution "as-is" is a great starting point for understanding its functionality.  The deployment process will already let you pull up and look at the Grafana dashboards, but you should also look through and understand the Node-RED flows for both the 'opcsimulator' and more importantly, the 'edgetoinfluxdb' module flow.
+
+To do that, using the same 'az cli vm open-port' command you used in the enviroment prep, also open port 1880 (opcsimulator) and port 1881 (edgetoinfluxdb).
+
+You can then hit http://{vm ip address}:1880 or http://{vm ip address}:1881 to see those flows
+
+>Note:  those flows are not secured with any kind of authentication for the sample. Only do this on a box with test data!
+
 ## Data sources
 
-The first step will be shutting off the sample data sources. To do this, you should remove the opcsimulator and opcpublisher module from the solution. This can be done by removing them from the [deployment.template.json](/deployment.template.json) file, and if desired, deleting the corresponding folder from the sample.
+The first step in customization will be shutting off the sample data sources. To do this, you should remove the opcsimulator and opcpublisher module from the solution. This can be done by removing them from the [deployment.template.json](/deployment.template.json) file, and if desired, deleting the corresponding folder from the sample.
 
-You'll then need to add your own data source.  This can be done by having an IoT "leaf" device (i.e. a device external to IoT Edge) "push" the data to IoT Edge (See [Connect a downstream device to an Azure IoT Edge gateway](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-connect-downstream-device)), or by writing a module to "pull" the data from its source (like [Modbus protocol gateway](https://docs.microsoft.com/en-us/azure/iot-edge/deploy-modbus-gateway) or OPC Publisher).  The key requirement is that whichever source you use needs to submit the data to edgeHub, and you need to set up an edgeHub [route](https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#declare-routes) to route the data into the 'edgetoinfluxdb' module.
+You'll then need to add your own data source.  This can be done by having an IoT "leaf" device (i.e. a device external to IoT Edge) "push" the data to IoT Edge (see [Connect a downstream device to an Azure IoT Edge gateway](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-connect-downstream-device)), or by writing a module to "pull" the data from its source (like [Modbus protocol gateway](https://docs.microsoft.com/en-us/azure/iot-edge/deploy-modbus-gateway) or OPC Publisher).  The key requirement is that whichever source you use needs to submit the data to edgeHub, and you need to set up an edgeHub [route](https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#declare-routes) to route the data into the 'edgetoinfluxdb' module.
 
 ## Moving data from edgeHub to InfluxDB
 
