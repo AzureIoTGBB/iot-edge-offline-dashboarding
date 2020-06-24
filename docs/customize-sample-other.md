@@ -6,7 +6,7 @@ The process for customizing or re-using the sample for other use cases will, obv
 
 The first step will be shutting off the sample data sources. To do this, you should remove the opcsimulator and opcpublisher module from the solution. This can be done by removing them from the [deployment.template.json](/deployment.template.json) file, and if desired, deleting the corresponding folder from the sample.
 
-You'll then need to add your own data source.  This can be done by having an IoT "leaf" device (i.e. a device external to IoT Edge) "push" the data to IoT Edge, or by writing a module to "pull" the data from its source.  The key requirement is that whichever source you use needs to submit the data to edgeHub, and you need to set up an edgeHub [route](https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#declare-routes) to route the data into the 'edgetoinfluxdb' module.
+You'll then need to add your own data source.  This can be done by having an IoT "leaf" device (i.e. a device external to IoT Edge) "push" the data to IoT Edge (See [Connect a downstream device to an Azure IoT Edge gateway](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-connect-downstream-device)), or by writing a module to "pull" the data from its source (like [Modbus protocol gateway](https://docs.microsoft.com/en-us/azure/iot-edge/deploy-modbus-gateway) or OPC Publisher).  The key requirement is that whichever source you use needs to submit the data to edgeHub, and you need to set up an edgeHub [route](https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#declare-routes) to route the data into the 'edgetoinfluxdb' module.
 
 ## Moving data from edgeHub to InfluxDB
 
