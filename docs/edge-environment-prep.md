@@ -24,7 +24,7 @@ az group create --name {resource_group} --location {datacenter_location}
 
 #### Create Azure Container Registry
 
-In this sample, we will be building docker images for each module and pushing them to a docker container registry. If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab teh username and password, you'll need it later.
+In this sample, we will be building docker images for each module and pushing them to a docker container registry. If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab the username and password, you'll need it later.
 
 #### Create IoT Hub
 
