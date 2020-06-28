@@ -24,14 +24,14 @@ az group create --name {resource_group} --location {datacenter_location}
 
 #### Create Azure Container Registry
 
-In this sample, we will be building docker images for each module and pushing them to a docker container registry. If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab teh username and password, you'll need it later.
+In this sample, we will be building docker images for each module and pushing them to a docker container registry. If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab the username and password, you'll need it later.
 
 #### Create IoT Hub
 
 Use following to create the IoT Hub resource. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux>
 
 ```bash
-az iot hub create  --resource-group {resource_group} --name {hub_name} --sku S1
+az iot hub create --resource-group {resource_group} --name {hub_name} --sku S1
 ```
 
 #### Create IoT Edge device identity
