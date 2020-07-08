@@ -4,7 +4,7 @@
 
 Before we can deploy the edge modules needed for this solution, we need to build the module images using the Dockerfiles found in this repository.  Once built, the images need to be placed into a container registry.
 
-Clone this repository to your local machine.
+Clone this repository to a machine that has docker installed (an example of a machine that you already have set up for this is the IoT Edge VM that you've already built).
 
 ```bash
 git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
@@ -58,7 +58,7 @@ In the IoT Edge Modules section, click the "+ Add" button and select "IoT Edge M
 }
 ```
 
-Click the "Add" button to complete the creation of the module to be deployed.  We now need to do this for the other four remaining modules.  The following are the property values to specify for each module.
+Click the "Add" button to complete the creation of the module to be deployed.  We now need to do this for the other four remaining modules.  The following are the property values to specify for each module. Note: the variable {GF_SECURITY_ADMIN_PASSWORD} represents the admin password that you will use to log into Grafana
 
 Module grafana:
 
