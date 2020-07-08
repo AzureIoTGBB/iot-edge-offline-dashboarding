@@ -18,7 +18,7 @@ Most manufacturers start their journey by providing visibility across machines, 
 
 Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning or engineers monitoring and fine-tuning production phases.
 
-Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communications to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communications to cloud is broken and sent to the industrial IoT platform when facility is restored. But how can users access real time information in the meanwhile?
+Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communications to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communications to cloud is broken and sent to the industrial IoT platform when communication to the facility is restored. But how can users access real time information in the meanwhile?
 
 There are two major points this sample implementation addresses:
 
@@ -51,7 +51,7 @@ As mentioned in the introduction, our sample dashboard provides meaningful calcu
 
 The first step in running the sample is to have a functioning, Linux-based IoT Edge instance (Windows support coming).  You can set one up by following the instructions [here](edge-environment-prep.md).
 
-Once you have a functioning IoT Edge environment, we are providing several options for deployment instructions, in both order of incrementing complexity, but also in order of increasing recommendation (for repeatability and being less error prone)
+Once you have a functioning IoT Edge environment, you can follow one of the three methods of deploying the solution below. They are listed in order of incremental complexity, but also in order of preference (for repeatability and being less error prone)
 
 * [Manual](deployment-manual.md) - for manual deployment instructions leveraging the docker command line and the Azure Portal
 * [Visual Studio Code](deployment-vscode.md) - for bulding and deploying to a single IoT Edge device via VS Code
