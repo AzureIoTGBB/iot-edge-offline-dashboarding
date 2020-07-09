@@ -60,24 +60,6 @@ Click on Pipelines from the left-nav and then click "Create Pipeline"
   - You may see a screen asking you to "Approve & Install Azure Pipelines".  Choose Approve and Install
 - From the "review your pipeline" screen, click the down-arrow next to Run and click "Save"  (we aren't ready to run yet, as we need to add some variables first)
 
-### Update pipeline target condition
-
-At the very bottom of the pipeline, you'll find the line
-
-```yaml
-        targetcondition: '*'
-```
-
-This tells the pipeline what we want the target condition for our automated deployment to be. By default, we target every Edge box in our IoT Hub.
-
-Earlier we added some target tags to our Edge box's device twin that we want to target. Edit the targetcondition to target that tag.  For example, using our example tag from above, the targetcondition would look like this
-
-```yaml
-        targetcondition: 'tags.dashboard=true'
-```
-
-Save your pipeline
-
 ### Set pipeline environment variables
 
 To make our pipeline as general as possible, much of the config is supplied in the form of environment variables.  To add these variables, click on "Variables" in the upper right hand corner of the Edit Pipeline screen. Add the following variables and values:
@@ -87,8 +69,8 @@ To make our pipeline as general as possible, much of the config is supplied in t
 - AZURE_SERVICE_CONNECTION:  The name of the azure service connection you created above
 - AZURE_SUBSCRIPTION_ID:  the subscription ID of the Azure subscription you are using
 - GRAFANA_ADMIN_PASSWORD:  the desired administrator password for the grafana dashboard web app when deployed
-- IOT_HUB_NAME:  The name of your IOT Hub  (short name, without the .azure-devices.net)
-- DEPLOYMENT_TARGET_CONDITION:  the target condition you want to use for your deployment. For example, based on the tag example used above, you could use 'tags.dashboard=true'.
+- IOT_HUB_NAME:  the name of your IOT Hub  (short name, without the .azure-devices.net)
+- DEPLOYMENT_TARGET_CONDITION:  the target condition you want to use for your deployment. Earlier we added some target tags to our Edge box's device twin that we want to target.  For example, based on the tag used above, give this variable the value: tags.dashboard=true
 
 Click "Save"
 
