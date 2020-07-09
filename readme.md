@@ -93,4 +93,4 @@ Offline Dashboards run at the IoT Edge device continuously recording data that i
 
 This sample implementation leverages data from two OPC-UA servers.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including Modbus, MQTT, or other custom protocols.  
 
-More Information about the sample solution can be found [here](/docs/dashboarding-sample.md)
+More Information about the sample solution can be found [here](/documentation/dashboarding-sample.md)

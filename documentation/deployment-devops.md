@@ -4,7 +4,7 @@ This document describes how to set up an Azure DevOps pipeline to deploy the sam
 
 ## Prep Edge boxes and IoT Hub
 
-Our DevOps pipeline is going to target "multiple" Edge boxes (even if you only want to test with one).  Follow the [Edge Environment Prep](/docs/edge-environment-prep.md) document to prep as many Edge devices as you want.
+Our DevOps pipeline is going to target "multiple" Edge boxes (even if you only want to test with one).  Follow the [Edge Environment Prep](/documentation/edge-environment-prep.md) document to prep as many Edge devices as you want.
 
 The way we are going to target our devices is via a 'tag' in the Edge devices [Device Twin](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-device-twins#device-twins). The DevOps pipeline creates an IoT Hub [Automatic Deployment](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management) that targets any Edge device that has the specified 'tag' in its twin.  
 
@@ -108,4 +108,4 @@ sudo iotedge list
 
 to confirm that your modules have deployed (it may take several minutes to deploy, depending on the speed of your Edge box's Internet connection)
 
-Once you have confirmed your modules are running, return to the [View the Grafana Dashboards](/docs/dashboarding-sample.md#view-the-grafana-dashboard) section to see your sample dashboards.
+Once you have confirmed your modules are running, return to the [View the Grafana Dashboards](/documentation/dashboarding-sample.md#view-the-grafana-dashboard) section to see your sample dashboards.

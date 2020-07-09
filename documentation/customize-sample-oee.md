@@ -385,4 +385,4 @@ Here are a few tips creating JSON message
 
 #### Modify Dashboard: Site Level Performance
 
-When you change data fields, dashboard and panels all need to be re-designed and queries modified.  See [Manufacturing KPIs](/docs/manufacturing_kpis.md) for a guidance on how dashboards are built.
+When you change data fields, dashboard and panels all need to be re-designed and queries modified.  See [Manufacturing KPIs](/documentation/manufacturing_kpis.md) for a guidance on how dashboards are built.
