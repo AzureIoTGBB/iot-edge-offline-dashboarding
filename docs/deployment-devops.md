@@ -15,7 +15,9 @@ To create the tag, navigate to your IoT Hub and choose "IoT Edge" from the left 
 (((rest of device twin removed for brevity)))
 
 "tags":
-    {"dashboard":true}
+    {"dashboard":true},
+
+(((rest of device twin removed for brevity)))
 }
 ```
 
@@ -86,6 +88,7 @@ To make our pipeline as general as possible, much of the config is supplied in t
 - AZURE_SUBSCRIPTION_ID:  the subscription ID of the Azure subscription you are using
 - GRAFANA_ADMIN_PASSWORD:  the desired administrator password for the grafana dashboard web app when deployed
 - IOT_HUB_NAME:  The name of your IOT Hub  (short name, without the .azure-devices.net)
+- DEPLOYMENT_TARGET_CONDITION:  the target condition you want to use for your deployment. For example, based on the tag example used above, you could use 'tags.dashboard=true'.
 
 Click "Save"
 

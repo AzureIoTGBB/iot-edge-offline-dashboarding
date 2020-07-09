@@ -4,6 +4,8 @@
 
 As discussed in the [readme](/readme.md) for this repo, we created a sample implementation of our offline dashboarding architecture. As a significant percentage of our customers who need offline dashboarding are manufacturers, that is the use case we chose to implement. In particular, we show the necessary data collection, calculations, and visualization of the Overall Equipment Effectiveness (OEE) metric, common to manufacturers. For a deep dive in the dashboard and calculations involved, please see [this document](manufacturing_kpis.md).
 
+If you want to skip all the preliminary information (and promise to read it later!) and jump straight to deployment of the sample, click [here](#deployment-of-the-sample)
+
 For guidance on how to customize the sample for other use cases, please see the [customization](#customizing-the-sample-for-other-use-cases) section below.
 
 ## Business Need
@@ -39,7 +41,7 @@ The offline dashboarding sample contains 5 modules:
 4. An InfluxDB module which stores data in time series structure
 5. A Grafana module which serves data from InfluxDB in dashboards.
 
-![offline dashboards 2](../media/OfflineDashboards_diag2.png)
+![offline dashboards 2](/media/OfflineDashboards_diag2.png)
 
 ## Understanding the sample data, calculations, and dashboard elements
 
@@ -52,7 +54,7 @@ The first step in running the sample is to have a functioning, Linux-based IoT E
 Once you have a functioning IoT Edge environment, we are providing several options for deployment instructions, in both order of incrementing complexity, but also in order of increasing recommendation (for repeatability and being less error prone)
 
 * [Manual](deployment-manual.md) - for manual deployment instructions leveraging the docker command line and the Azure Portal
-* TODO:  -   ... TODO: pseudomanual with VS code or scripts
+* [Visual Studio Code](deployment-vscode.md) - for bulding and deploying to a single IoT Edge device via VS Code
 * [Azure DevOps](deployment-devops.md) - For integrating the build and deployment process into an Azure DevOps pipeline
 
 ### View the Grafana dashboard

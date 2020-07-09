@@ -10,7 +10,7 @@ Clone this repository to your local machine.
 git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
 ```
 
-Next, we need to build the image for each module and push it to a docker container registry.  Replace {registry} in the commands below with your own registry location.  If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab teh username and password, you'll need it later.
+Replace {registry} in the commands below with your own container registry location  (e.g. myregistry.azurecr.io).
 
 ```bash
 sudo docker login {registry}
