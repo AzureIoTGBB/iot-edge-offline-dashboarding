@@ -77,4 +77,4 @@ stages:
         deploymentid: offline-dashboard
         priority: '10'
         deviceOption: Multiple Devices
-        targetcondition: $(DEPLOYMENT_TARGET_CONDITION)
+        targetcondition: 'tags.dashboard=true'
