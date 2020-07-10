@@ -1,4 +1,4 @@
-# Deploy IoT Offline Dashboarding sample via VSCode
+# Deploy the IoT Offline Dashboarding sample via VSCode
 
 This document shows how to deploy the IoT Offline Dashboarding sample via [VS Code](https://code.visualstudio.com/). To ease the number of pre-requisites and tools to install, this repository takes advantage of the "[remote container](https://code.visualstudio.com/docs/remote/containers)" support in VS Code. It leverages the same IoT Edge Dev tools that the IoT Edge extensions (and Azure DevOps) use under the hood - without having to install it or its prerequisites locally.
 

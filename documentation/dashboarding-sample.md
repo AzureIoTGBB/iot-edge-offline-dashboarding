@@ -1,4 +1,4 @@
-# IoT Edge offline dashboarding sample
+# IoT Offline Dashboarding sample
 
 As discussed in the [readme](/readme.md) for this project, this use case and architecture was chosen as a significant percentage of Microsoft customers showed interest in offline dashboarding solutions. 
 

@@ -1,4 +1,4 @@
-# Deploy IoT Offline Dashboarding sample via Azure Devops pipelines
+# Deploy the IoT Offline Dashboarding sample via Azure Devops pipelines
 
 This document describes how to set up an Azure DevOps pipeline to deploy the IoT Offline Dashboarding sample. Chose this option to ensure a conitnuous, repeatable development, build, and deployment process, as well as having the ability to test the deployment to multiple IoT Edge devices at scale.
 

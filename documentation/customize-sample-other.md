@@ -1,4 +1,4 @@
-# Customize the dashboard sample for other use cases
+# Customize the IoT Offline Dashboarding sample for other use cases
 
 The process for customizing or re-using the sample for other use cases will, obviously, depend on the details of the use case. However, some high level guidance can be found below.
 

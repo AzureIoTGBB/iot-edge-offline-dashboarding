@@ -1,5 +1,5 @@
 
-# IoT Dashboarded Edge samples - OEE drilldown
+# IoT Offline Dashboarding sample OEE drilldown
 
 ## Manufacturing KPIs
 

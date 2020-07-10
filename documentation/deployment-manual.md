@@ -1,4 +1,4 @@
-# Deploy IoT Offline Dashboarding sample manually
+# Deploy the IoT Offline Dashboarding sample manually
 
 This document describes how to deploy the IoT Offline Dashboarding sample manually on an Edge device. Chose this option to gain a deep understanding of every required step involved in deploying the sample.
 

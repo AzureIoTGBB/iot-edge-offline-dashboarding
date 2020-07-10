@@ -1,5 +1,5 @@
 
-# Customizing the offline dashboarding solution
+# Customizing the IoT Offline Dashboarding sample
 
 The components in the solution are driven by configuration files, contained in and deployed via their corresponding Docker images. This allows customizing the dashboard, by simply updating the corresponding dashboard configuration file and redeploying (possibly 'at scale') the respective images.
 
