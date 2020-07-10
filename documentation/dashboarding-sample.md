@@ -2,7 +2,7 @@
 
 As discussed in the [readme](/readme.md) for this project, this use case and architecture was chosen as a significant percentage of Microsoft customers showed interest in offline dashboarding solutions. 
 
-Many of the requests came out of the manufacturing industry, which is why the example is based on a manufacturing scenario. In particular, the sample includes the necessary data collection, calculations, and visualization of the Overall Equipment Effectiveness (OEE) metric, common to manufacturers. For a deep dive of the metrics and calculations involved, please see [this document](manufacturing_kpis.md).
+Many of the requests came out of the manufacturing industry, which is why the example is based on a manufacturing scenario. In particular, the sample includes the necessary data collection, calculations, and visualization of the Overall Equipment Effectiveness (OEE) metric, common to manufacturers. For a deep dive of the metrics and calculations involved, please see [this document](manufacturing-kpis.md).
 
 More information on the deployment of the sample can be found [here](#deployment-of-the-sample).
 
@@ -45,7 +45,7 @@ The offline dashboarding sample contains 5 modules:
 
 ## Understanding the sample data, calculations, and dashboard elements
 
-The sample dashboard provides meaningful calculations of the Overall Equipment Effectiveness (OEE) metric common to manufacturers. There is a [documentation on how these KPIs are defined and calculated](manufacturing_kpis.md).
+The sample dashboard provides meaningful calculations of the Overall Equipment Effectiveness (OEE) metric common to manufacturers. There is a [documentation on how these KPIs are defined and calculated](manufacturing-kpis.md).
 
 ## Deployment of the sample
 
