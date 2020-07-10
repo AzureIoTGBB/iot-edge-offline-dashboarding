@@ -1,45 +1,62 @@
 # IoT Edge Offline Dashboarding
 
-This project provides a set of modules that can be used with Azure IoT Edge to perform dashboarding at the edge.  
+This project provides a set of modules that can be used with Azure IoT Edge to perform dashboarding at the edge. 
 
-The goal is to provide both guidance as well as a sample implementation to show how you can enable dashboards that run on the edge at sites in the field, while still sending data to the cloud for centralized reporting and monitoring.
+The goal is to provide both guidance as well as a sample implementation to enable dashboards that run on the edge at sites in the field, while still sending data to the cloud for centralized reporting and monitoring.
 
-The architecture for this solution is composed of the following components:
+If you want to jump right into the sample implementation, please start [here](./documentation/dashboarding-sample.md).
 
-* [Azure IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/)
-* [Node-RED](https://nodered.org/)
-* [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
-* [Grafana](https://grafana.com/grafana/)
+**Table of contents**
 
-For information on other potential "Dashboarding on the Edge" use cases, why this architecture was chosen, discussion of alternatives, please see next section.
+* [Engage and contribute](#engage-and-contribute)
+* [Solution goals](#solution-goals)
+* [Solution architecture & components](#solution-architecture-&-components)
+* [Offline Dashboards sample](#offline-dashboards-sample)
 
-This architecture and its components are intended to be general purpose and apply across several industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore, the sample implementation below focuses on that use case.
 
-## Solution Goals
+## Engage and contribute
 
-The purpose of this solution is to provide both general purpose guidance for dashboarding on the edge as well as a sample implementation.  While our sample implementation focuses on manufacturing, there are plenty of other potential use cases for this technology.  Some examples include:
+* Ask questions about developing for Azure IoT Edge on [Stack Overflow](https://stackoverflow.com/questions/tagged/azure-iot-edge) using the **azure-iot-edge** tag.
 
-* retail stores that may need local dashboards for inventory or asset management
-* warehouses that may need to manage the tracking and movement of product throughout the warehouse
-* smart buildings who may need to manage energy or HVAC efficiency throughout the property
-* "things that move" applications such as container or cruise ships that may need to operate for extended periods offline
+* Search for [known issues](https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding/issues) or file a [new issue](https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding/issues/new) if you find something broken in this project.
+
+* Learn how you can contribute to this project [here](./documentation/contributing.md).
+
+* This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Solution goals
+
+The purpose of this solution is to provide both general purpose guidance for dashboarding on the edge as well as a sample implementation. While our sample implementation focuses on manufacturing, there are plenty of other potential use cases for this technology. Some examples include:
+
+* Retail stores that may need local dashboards for inventory or asset management
+* Warehouses that may need to manage the tracking and movement of product throughout the warehouse
+* Smart buildings who may need to manage energy or HVAC efficiency throughout the property
+* "Things that move" applications such as container or cruise ships that may need to operate for extended periods offline
 
 The main thing in common in these scenarios is the potential need to not only send important 'site' data to the cloud for centralized reporting and analytics, but also the ability to continue local operations in the event of an internet outage.
 
-Our goal is to demonstrate how this can be done for a specific manufacturing use case, but also give an example that can be re-used for other use cases by:
+The goal of this project is to demonstrate how this can be done for a specific manufacturing use case, but also give an example that can be re-used for other use cases by:
 
-* replacing the data source(s) to be specific to the new use cases
-* replacing the configuration files for the data ingestion and dashboards
+* Replacing the data source(s) to be specific to the new use cases
+* Replacing the configuration files for the data ingestion and dashboards
 
-## Solution Architecture Components
+## Solution architecture & components
 
-The architecture for this solution utilizes four main components in addition to Azure IoT Hub.  [Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/) is utilized to orchestrate and manage modules at the edge in addition to providing capabilities for offline operation and message routing.  [Node-RED](https://nodered.org/) is an open-source flow programming tool utilized to easily integrate and route messages from edge devices to InfluxDB.  [InfluxDB](https://www.influxdata.com/) is an open-source, time series database for storing device telemetry.  Lastly, [Grafana](https://grafana.com/) is an open-source analytics and dashboarding tool for visualizing device telemetry.
+The architecture for this solution utilizes four main components in addition to Azure IoT Hub.
+
+* [Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/) is utilized to orchestrate and manage modules at the edge in addition to providing capabilities for offline operation and message routing.
+* [Node-RED](https://nodered.org/) is an open-source flow programming tool utilized to easily integrate and route messages from edge devices to InfluxDB. 
+* [InfluxDB](https://www.influxdata.com/) is an open-source, time series database for storing device telemetry.
+* Lastly, [Grafana](https://grafana.com/) is an open-source analytics and dashboarding tool for visualizing device telemetry.
+
+This architecture and its components are intended to be general purpose and apply across several industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore, the sample implementation below focuses on that use case.
 
 ### Reasons for selecting this architecture
 
-The main purpose of this solution is to provide an ability for local operators to view dashboards at the edge regardless of whether the edge device was online or offline.  This is a natural scenario that IoT Edge supports.  To support dashboarding however, there was a need to also select both a storage component as well as a visualization component.  
+The main purpose of this solution is to provide an ability for local operators to view dashboards at the edge regardless of whether the edge device was online or offline. This is a natural scenario that IoT Edge supports. To support dashboarding however, there was a need to also select both a storage component as well as a visualization component. 
 
-#### Storage Component
+#### Storage component
 
 Several storage solutions were reviewed and the team selected InfluxDB for the following reasons:
 
@@ -50,9 +67,9 @@ Several storage solutions were reviewed and the team selected InfluxDB for the f
 * Quick time to value and can be deployed as a Docker container
 * Ranked #1 for time series DBs according to [DB-Engines](https://db-engines.com/en/system/InfluxDB)
 
-Although InfluxDB was chosen to support storage, other DBs were considered and could potentially be used as well.  For example, Graphite, Prometheus and Elasticsearch were also considered.  Azure Time Series insights was also considered but at the time of this activity was not yet available on Azure IoT Edge.
+Although InfluxDB was chosen to support storage, other DBs were considered and could potentially be used as well. For example, [Graphite](http://graphiteapp.org/), [Prometheus](https://prometheus.io) and [Elasticsearch](https://www.elastic.co/de/) were also considered. [Azure Time Series Insights](https://azure.microsoft.com/en-us/services/time-series-insights) was also considered but at the time of this activity was not yet available on Azure IoT Edge.
 
-#### Visualization Component
+#### Visualization component
 
 Several visualization solutions were reviewed and the team selected Grafana for the following reasons:
 
@@ -62,11 +79,11 @@ Several visualization solutions were reviewed and the team selected Grafana for 
 * Allows you to share dashboards across an organization
 * Quick time to value and can be deployed as a Docker container
 
-Although Grafana was chosen to support visualization and dashboarding, other tools were considered and could potentially be used as well.  For example, Kibana may be a better fit for visualization and analyzing of log files and is a natural fit if working with Elasticsearch.  Chronograf was considered but was limited to InfluxDB as a data source.  PowerBI Server was also investigated, but lack of support for being able to containerize the PowerBI Server meant it could not be used directly with Azure IoT Edge. Additionally, PowerBI Server does not support the real-time "live" dashboarding required for this solution.
+Although Grafana was chosen to support visualization and dashboarding, other tools were considered and could potentially be used as well. For example, [Kibana](https://www.elastic.co/kibana) may be a better fit for visualization and analyzing of log files and is a natural fit if working with Elasticsearch. [Chronograf](https://www.influxdata.com/time-series-platform/chronograf) was considered but was limited to InfluxDB as a data source. [PowerBI Report Server](https://powerbi.microsoft.com/en-us/report-server/) was also investigated, but lack of support for being able to containerize the PowerBI Report Server meant it could not be used directly with Azure IoT Edge. Additionally, PowerBI Report Server does not support the real-time "live" dashboarding required for this solution.
 
-#### Integration Component
+#### Integration component
 
-Node-RED was chosen as the tool to ease integration between IoT Edge and InfluxDB.  Although the integration component could be written in several programming languages and containerized, Node-RED was selected for the following reasons:
+Node-RED was chosen as the tool to ease integration between IoT Edge and InfluxDB. Although the integration component could be written in several programming languages and containerized, Node-RED was selected for the following reasons:
 
 * Open-source with a large community following
 * Readily available [nodes](https://flows.nodered.org/node/node-red-contrib-azure-iot-edge-kpm) for tapping into IoT Edge message routes
@@ -75,22 +92,20 @@ Node-RED was chosen as the tool to ease integration between IoT Edge and InfluxD
 * Easy flow-based programming allows manipulation and massaging of messages before inserted into a DB.
 * Can be deployed as a Docker container
 
-## Solution Architecture
+## Offline Dashboards sample
 
-The Offline Dashboards sample is built upon Azure IoT Edge technology. IoT Edge is responsible for deploying and managing lifecycle of a set of modules (described later) that make up Offline Dashboards sample.
+The "Offline Dashboards" sample is built upon [Azure IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/) technology. Azure IoT Edge is responsible for deploying and managing lifecycle of a set of modules (described later) that make up Offline Dashboards sample.
 
-![offline dashboards](media/OfflineDashboards_diag.png)
+![Diagram showing the offline dashboard architecture](./media/OfflineDashboards_diag.png)
 
-Offline Dashboards run at the IoT Edge device continuously recording data that is sent from devices to IoT Hub. It contains 3 modules:
+Offline Dashboards runs on the IoT Edge device, continuously recording data that is sent from devices to IoT Hub. It contains 3 modules:
 
 1. A Node-Red module that collects data from one or more data sources, in our case off of the edgeHub message bus, and writes that data into InfluxDB.
 2. An InfluxDB module which stores data in time series structure.
 3. A Grafana module which serves data from InfluxDB in dashboards.
 
-![image-20200529160206347](media/OfflineDashboards_diag0.png)
+![Diagram showing the Azure IoT Edge solution architecture](./media/OfflineDashboards_diag0.png)
 
-## About the sample solution
+The sample implementation leverages data from two OPC-UA servers. For many reasons, [OPC-UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including Modbus, MQTT, or other custom protocols. 
 
-This sample implementation leverages data from two OPC-UA servers.  For many reasons, OPC-UA is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including Modbus, MQTT, or other custom protocols.  
-
-More Information about the sample solution can be found [here](/docs/dashboarding-sample.md)
+Start learning about the actual sample implementation [here](./documentation/dashboarding-sample.md).
