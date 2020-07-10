@@ -1,60 +1,77 @@
-# Prepping an Azure VM to run IoT Edge
+# Creating an Azure environment to develop and run IoT Edge services
 
-If you already have a functioning, AMD64-Linux-based, IoT Edge box, you can skip to the [dashboarding sample prep](#dashboard-solution-preparation) section.
+This document describes how to set up the required Azure services as well as an AMD64-Linux-based IoT Edge box to deploy the sample.
 
-## Azure CLI
+**Table of contents**
+* [Install Azure CLI](#install-azure-cli)
+* [Install Azure IoT for deployment](#install-azure-iot-for-deployment)
+* [Create the Azure and Edge services needed](#create-the-required-azure-and-edge-services)
+* [](#)
+* [](#)
+* [](#)
 
-These instructions leverage the Azure Command Line Interface (CLI). To install the Azure CLI for your environment, follow the instructions [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for your OS. Alternately, in the Azure Portal, you can use an [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart?view=azure-cli-latest) which has the CLI pre-installed (stop before the "Create a resource group" section).
+## Install Azure CLI
 
-## Deployment
+This sample leverages the [Azure Command Line Interface (CLI)](https://docs.microsoft.com/en-us/cli). To install the Azure CLI for your environment, follow the instructions [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for the desired environment. 
 
-To deploy, we use the newest version of the Azure IoT extension, called `azure-iot`. The legacy version is called `azure-iot-cli-ext`. You should only have one version installed at a time. You can use the command `az extension list` to validate the currently installed extensions.
+Alternately, use the [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart?view=azure-cli-latest) in the Azure Portal, which has the CLI pre-installed. Follow the instructions until the "Create a resource group" section.
 
-Use `az extension remove --name azure-cli-iot-ext` to remove the legacy version of the extension.
+## Install Azure-IoT for deployment
 
-Use `az extension add --name azure-iot` to add the new version of the extension.
+The `azure-iot` extension is used to deploy the sample.
 
-### Create Resources
+Note that the legacy version was called `azure-iot-cli-ext`:
 
-Create a resource group to manage all the resources used in this solution
+* Use the command `az extension list` to validate the currently installed extensions before you install azure-iot.
+* Use `az extension remove --name azure-cli-iot-ext` to remove the legacy version of the extension.
+
+Use `az extension add --name azure-iot` to add the most recent version of the extension.
+
+## Create the required Azure and Edge services
+
+Create a resource group to manage all the resources used in this solution:
 
 ```bash
 az group create --name {resource_group} --location {datacenter_location}
 ```
 
-#### Create Azure Container Registry
+### Create an Azure Container Registry
 
-In this sample, we will be building docker images for each module and pushing them to a docker container registry. If you do not have one already, you can create an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry).  Note, once created, you'll need to navigate to the container registry and the "Access Keys" blade in the left nav and grab teh username and password, you'll need it later.
+This sample is based on Docker images for each module, which are pushed to a Docker container registry.
 
-#### Create IoT Hub
+If not already available, set up an Azure Container Registry with these [instructions](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli#create-a-container-registry). Once created navigate to the "Access Keys" blade in the left navigation of the container registry settings and note down the username and password.
 
-Use following to create the IoT Hub resource. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux>
+### Create an Azure IoT Hub
+
+Create a new IoT Hub resource. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux>
 
 ```bash
-az iot hub create  --resource-group {resource_group} --name {hub_name} --sku S1
+az iot hub create --resource-group {resource_group} --name {hub_name} --sku S1
 ```
 
-#### Create IoT Edge device identity
+### Create an IoT Edge device identity
 
-Create a device identity for your IoT Edge device so that it can communicate with your IoT Hub. The device identity lives in the cloud, and you use a unique device connection string to associate a physical device to a device identity. Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
+A device identity is required for each IoT Edge device so that it can communicate with the IoT Hub. The device identity lives in the cloud, and the device uses a unique device connection string to associate itself to its device identity.
+
+Detailed information can be found at: <https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device>
 
 ```bash
 az iot hub device-identity create --hub-name {hub_name} --device-id myEdgeDevice --edge-enabled
 ```
 
-Retrieve the connection string for your device, which links your physical device with its identity in IoT Hub.
+Retrieve the connection string for the created device, which links the physical device with its identity in the IoT Hub.
 
 ```bash
 az iot hub device-identity show-connection-string --device-id myEdgeDevice --hub-name {hub_name}
 ```
 
-Copy the value of the `connectionString` key from the JSON output and save it. This value is the device connection string. You'll use this connection string to configure the IoT Edge runtime in the next section.
+Copy the value of the `connectionString` from the JSON output and save it. The connection string is used to configure the IoT Edge runtime in the next section.
 
 ![Retrieve connection string from CLI output](../media/retrieve-connection-string.png)
 
-#### Create and configure IoT Edge VM
+### Create and configure an IoT Edge VM
 
-We will use a virtual machine as our IoT Edge device. Microsoft-provided [Azure IoT Edge on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) virtual machine image has everything preinstalled to run Azure IoT Edge on a device. Accept the terms of use and create this virtual machine using the following command.
+The sample can be run on a [physical IoT Edge device](https://catalog.azureiotsolutions.com/) or a virtual machine. Microsoft provides a [virtual machine image based on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) that has everything preinstalled to run Azure IoT Edge on a device. Accept the terms of use and create the virtual machine using the following command:
 
 ```bash
 az vm image terms accept --urn microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest
@@ -62,41 +79,42 @@ az vm image terms accept --urn microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604
 az vm create --resource-group {resource_group} --name myEdgeVM --image microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest --admin-username azureuser --generate-ssh-keys
 ```
 
-Use the edge device primary device connection string you noted above, to connect IoT Edge device to IoT Hub
+Use the primary device connection string noted above to connect the IoT Edge device (or VM) to the IoT Hub.
 
 ```bash
 az vm run-command invoke -g {resource_group} -n myEdgeVM --command-id RunShellScript --script "/etc/iotedge/configedge.sh '{device_connection_string}'"
 ```
 
-Once this command finishes, SSH into your VM using the 'azureuser' user name and run
+If successful, SSH into your device / VM using the 'azureuser' username and run:
 
 ```bash
 iotedge list
 ```
 
-You should see the edgeAgent module running, indicating a successful setup.  
+This should list the edgeAgent module running, indicating a successful setup.
 
 ## Dashboard solution preparation
 
-Before we leave the Edge VM side of things, there are a couple of prep items that need to be done besides installing and configuring IoT Edge.  
-
-First, since the edge machine will need persistent storage for the InfluxDB database, we need to create a directory for the module to bind to.  Use the ssh command to login into your edge machine and run the following.
+The sample is using a persistent storage for the InfluxDB database, which requires a directory for the module to bind to. Use the ssh command to log into the Edge device / VM and run the following commands:
 
 ```bash
 sudo mkdir /influxdata
 sudo chmod 777 -R /influxdata
 ```
 
-Next, we need to open the Grafana port, which by default is port 3000, on our VM.  Note that you likely wouldn't do this in production, as your "offline" clients will probably be on the same network as your IoT Edge box.  We only need to do this because we are running/testing on a VM in Azure.  From the Azure CLI, run the following command to open access
+Next, open a port for the Grafana dashboards. The default Grafana port is 3000:
+
+> [!NOTE]
+> This is not required in a production environment / using real devices, as any "offline" clients will probably be on the same network as the IoT Edge box. This is only required if using a VM in Azure.
 
 ```bash
 az vm open-port --resource-group {resource group} --name {edge vm name} --port 3000
 ```
 
-Depending on your azure environment, you may need to add a rule to the subnet as well.  You can do that by running
+Depending on the Azure environment it might be required to add a rule to the subnet as well:
 
 ```bash
 az vm open-port --resource-group {resource group} --name {edge vm name} --apply-to-subnet --port 3000
 ```
 
-You can now return to the [dashboarding sample](dashboarding-sample.md#deployment-of-the-sample) document and pick a deployment strategy
+You can now return to the [dashboarding sample](dashboarding-sample.md#deployment-of-the-sample) document to pick a deployment strategy.
