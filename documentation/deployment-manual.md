@@ -177,4 +177,4 @@ Once confirmed that the modules are running, return to the [page on Grafana Dash
 ## See also
 
 * [Deploying via Azure DevOps pipelines](deployment-devops.md)
-* [Depoying via VSCode](deployment-vscode.md)
+* [Deploying via VSCode](deployment-vscode.md)

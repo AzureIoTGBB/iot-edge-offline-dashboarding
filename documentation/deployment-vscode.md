@@ -1,6 +1,6 @@
-# IoT Offline Dashboarding sample - manual deployment
+# Deploy IoT Offline Dashboarding sample via VSCode
 
-This document shows how to deploy the sample dashboards via VS Code.  To ease the number of pre-requisites and tools you need to install, we chose to take advantage of the "[remote container](https://code.visualstudio.com/docs/remote/containers)" support in VS Code.   This let's us leverage the same IoT Edge Dev tool that the IoT Edge extension (and azure devops) uses under the covers, without having to install it or its prerequisites locally.
+This document shows how to deploy the IoT Offline Dashboarding sample via VS Code.  To ease the number of pre-requisites and tools you need to install, we chose to take advantage of the "[remote container](https://code.visualstudio.com/docs/remote/containers)" support in VS Code.   This let's us leverage the same IoT Edge Dev tool that the IoT Edge extension (and azure devops) uses under the covers, without having to install it or its prerequisites locally.
 
 ## Install prerequisites
 
@@ -99,3 +99,8 @@ sudo iotedge list
 on your Edge box. Depending on the Internet speed of the connection to your Edge box, you may need to run it a few times to allow time for all the containers to be pulled down.
 
 Once you have confirmed your modules are running, return to the [View the Grafana Dashboards](dashboarding-sample.md#view-the-grafana-dashboard) section to see your sample dashboards.
+
+## See also
+
+* [Deploying manually](deployment-manual.md)
+* [Deploying via Azure DevOps pipelines](deployment-devops.md)

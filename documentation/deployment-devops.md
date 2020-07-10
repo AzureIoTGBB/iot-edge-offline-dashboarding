@@ -127,4 +127,4 @@ Once confirmed that the modules are running, return to the [page on Grafana Dash
 ## See also
 
 * [Deploying manually](deployment-manual.md)
-* [Depoying via VSCode](deployment-vscode.md)
+* [Deploying via VSCode](deployment-vscode.md)

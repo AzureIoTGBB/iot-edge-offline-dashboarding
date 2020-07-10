@@ -3,6 +3,9 @@
 
 The components in the solution are driven by configuration files, contained in and deployed via their corresponding Docker images. This allows customizing the dashboard, by simply updating the corresponding dashboard configuration file and redeploying (possibly 'at scale') the respective images.
 
+> [!NOTE]
+> This page describes customization within the defined manufacturing scenario. If you are interested in adapting the sample for other industries or use cases, please see [Customizing the dashboard sample for other use cases](customize-sample-other.md).
+
 **Table of contents**
 * [Connecting assets / OPC servers](#connecting-assets-/-opc-servers)
 * [Adding a new asset (basic scenario)](#adding-a-new-asset-basic-scenario)

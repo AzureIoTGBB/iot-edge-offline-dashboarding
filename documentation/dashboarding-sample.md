@@ -57,7 +57,7 @@ The sample dashboard provides meaningful calculations of the Overall Equipment E
 
 ## Deploying the sample
 
-The first step in running the sample is to have a functioning, Linux-based IoT Edge instance (Windows support coming). You can set one up by following the instructions [here](edge-environment-prep.md).
+The first step in running the sample is to have a functioning, Linux-based IoT Edge instance (Windows support coming). You can set one up by following the instructions [here](setup-edge-environment.md).
 
 Once you have a functioning IoT Edge environment, the sample provides several options for deployment, in both order of incrementing complexity and in order of increasing recommendation (for repeatability and being less error prone):
 
