@@ -2,6 +2,11 @@
 
 This project welcomes contributions from the community. All changes be they small or large, need to adhere to the [documentation standards](documentation-guide.md), so please ensure you are familiar with these while developing to avoid delays when the change is being reviewed.
 
+**Table of contents**
+* [Submission process](#submission-process)
+* [Proposing feature requests](#proposing-feature-requests)
+* [Contribution process](#contribution-process)
+
 ## Submission process
 
 We provide several paths to enable developers to contribute, all starting with [creating a new issue](https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding/issues/new).

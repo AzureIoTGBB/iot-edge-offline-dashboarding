@@ -6,6 +6,13 @@ The goal is to provide both guidance as well as a sample implementation to enabl
 
 If you want to jump right into the sample implementation, please start [here](./documentation/dashboarding-sample.md).
 
+**Table of contents**
+
+* [Engage and contribute](#engage-and-contribute)
+* [Solution goals](#solution-goals)
+* [Solution architecture & components](#solution-architecture-&-components)
+* [Offline Dashboards sample](#offline-dashboards-sample)
+
 
 ## Engage and contribute
 
@@ -17,19 +24,6 @@ If you want to jump right into the sample implementation, please start [here](./
 
 * This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Project architecture
-
-The architecture for this solution is composed of the following components:
-
-* [Azure IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/)
-* [Node-RED](https://nodered.org/)
-* [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
-* [Grafana](https://grafana.com/grafana/)
-
-This architecture and its components are intended to be general purpose and apply across several industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore, the sample implementation below focuses on that use case.
-
-For information on other potential "Dashboarding on the Edge" use cases, why this architecture was chosen, discussion of alternatives, please see [Solution architecture components](#solution-architecture-components).
 
 ## Solution goals
 
@@ -47,7 +41,7 @@ The goal of this project is to demonstrate how this can be done for a specific m
 * Replacing the data source(s) to be specific to the new use cases
 * Replacing the configuration files for the data ingestion and dashboards
 
-## Solution architecture components
+## Solution architecture & components
 
 The architecture for this solution utilizes four main components in addition to Azure IoT Hub.
 
@@ -55,6 +49,8 @@ The architecture for this solution utilizes four main components in addition to 
 * [Node-RED](https://nodered.org/) is an open-source flow programming tool utilized to easily integrate and route messages from edge devices to InfluxDB. 
 * [InfluxDB](https://www.influxdata.com/) is an open-source, time series database for storing device telemetry.
 * Lastly, [Grafana](https://grafana.com/) is an open-source analytics and dashboarding tool for visualizing device telemetry.
+
+This architecture and its components are intended to be general purpose and apply across several industries and use cases by simply switching out the data sources and dashboards. However, by far the customer segment where this need comes up the most often is manufacturing. Therefore, the sample implementation below focuses on that use case.
 
 ### Reasons for selecting this architecture
 
@@ -96,7 +92,7 @@ Node-RED was chosen as the tool to ease integration between IoT Edge and InfluxD
 * Easy flow-based programming allows manipulation and massaging of messages before inserted into a DB.
 * Can be deployed as a Docker container
 
-## Solution architecture
+## Offline Dashboards sample
 
 The "Offline Dashboards" sample is built upon [Azure IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/) technology. Azure IoT Edge is responsible for deploying and managing lifecycle of a set of modules (described later) that make up Offline Dashboards sample.
 
@@ -110,8 +106,6 @@ Offline Dashboards runs on the IoT Edge device, continuously recording data that
 
 ![Diagram showing the Azure IoT Edge solution architecture](./media/OfflineDashboards_diag0.png)
 
-## About the sample solution
-
-This sample implementation leverages data from two OPC-UA servers. For many reasons, [OPC-UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including Modbus, MQTT, or other custom protocols. 
+The sample implementation leverages data from two OPC-UA servers. For many reasons, [OPC-UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) is Microsoft's recommended manufacturing integration technology, where possible. However, the OPC-UA publisher that generates data for the dashboard could be substituted with other data sources including Modbus, MQTT, or other custom protocols. 
 
 Start learning about the actual sample implementation [here](./documentation/dashboarding-sample.md).

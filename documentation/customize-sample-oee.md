@@ -3,6 +3,8 @@
 
 The components in the solution are driven by configuration files, contained in and deployed via their corresponding Docker images. This allows customizing the dashboard, by simply updating the corresponding dashboard configuration file and redeploying (possibly 'at scale') the respective images.
 
+**Table of contents**
+* [Connecting assets / OPC servers](#connecting-assets-/-opc-servers)
 * [Adding a new asset (basic scenario)](#adding-a-new-asset-basic-scenario)
 * [Adding a new asset (complex scenario)](#adding-a-new-asset-complex-scenario)
 

@@ -8,6 +8,14 @@ More information on the deployment of the sample can be found [here](#deployment
 
 For guidance on how to customize the sample for other use cases, please see the [customization](#customizing-the-sample-for-other-use-cases) section below.
 
+**Table of contents**
+* [Business need](#business-need)
+* [Solution architecture](#solution-architecture)
+* [Understanding the sample data, calculations, and dashboard elements](#understanding-the-sample-data,-calculations,-and-dashboard-elements)
+* [Deploying the sample](#deploying-the-sample)
+* [Customizing the sample](#customizing-the-sample)
+* [Known issues](#known-issues)
+
 ## Business need
 
 Smart Manufacturing provides new opportunities to improve inefficiencies across labor, processes, machinery, materials and energy across the manufacturing lifecycle.
@@ -47,7 +55,7 @@ The offline dashboarding sample contains 5 modules:
 
 The sample dashboard provides meaningful calculations of the Overall Equipment Effectiveness (OEE) metric common to manufacturers. There is a [documentation on how these KPIs are defined and calculated](manufacturing-kpis.md).
 
-## Deployment of the sample
+## Deploying the sample
 
 The first step in running the sample is to have a functioning, Linux-based IoT Edge instance (Windows support coming). You can set one up by following the instructions [here](edge-environment-prep.md).
 

@@ -4,8 +4,8 @@ This document outlines the documentation guidelines and standards. It provides a
 
 The page itself is supposed to serve as an example, therefore it uses the intended style and the most common markup features of the documentation.
 
-- [Source](#source-documentation)
-- [How-to](#how-to-documentation)
+* [Source](#source-documentation)
+* [How-to](#how-to-documentation)
 
 ---
 
