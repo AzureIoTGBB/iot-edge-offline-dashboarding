@@ -6,9 +6,6 @@ This document describes how to set up the required Azure services as well as an 
 * [Install Azure CLI](#install-azure-cli)
 * [Install Azure IoT for deployment](#install-azure-iot-for-deployment)
 * [Create the Azure and Edge services needed](#create-the-required-azure-and-edge-services)
-* [](#)
-* [](#)
-* [](#)
 
 ## Install Azure CLI
 
