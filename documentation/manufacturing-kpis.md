@@ -1,71 +1,81 @@
 
 # IoT Offline Dashboarding sample OEE drilldown
 
-## Manufacturing KPIs
+As discussed in the [readme](/readme.md) this sample is based around a dashboard to display machine performance KPIs in a manufacturing environment. In particular, the sample includes the necessary data collection, calculations, and visualization of the Overall Equipment Effectiveness (OEE) metric, common to manufacturers.
 
-Our Offline Dashboards solution includes a sample dashboard to display OEE and its component KPIs in manufacturing environment.
+For more information on the chosen scenario as well as alternative options, please see [the sample documentation](dashboarding-sample.md)
 
-**Performance:** Performance KPI indicates if the machine is manufacturing good items as much as it is expected. It is calculated as
+**Table of contents**
+* [KPI types](#kpi-types)
+* [Sample data sources and data flow](#sample-data-sources-and-data-flow)
+* [Site Level Performance dashboard](#site-level-performance-dashboard)
+
+## KPI types
+
+### Performance
+
+The performance KPI indicates if the machine is working as intended & achieving it's desired output. It is calculated as:
 
 ```html
 Performance = (Good Items Produced/Total Time Machine was Running)/(Ideal Rate of Production)
 ```
 
-where "Ideal Rate of Production" is what we expect machine to perform. The unit of KPI is percentage and "Ideal Rate of Production" is provided as a parameter to dashboards.
+"Ideal Rate of Production" is the expected rate of performance and is provided as a parameter. The unit is "percentage of the desired performance".
 
-**Quality:** Quality KPI gives you the ratio of good items produced by the machine over all items produced (i.e. good items produced and bad items produced). Calculation formula is
+### Quality
+Quality is the ratio of items produced by the machine that pass quality checks over all items produced, assuming that there will be items that fail the quality bar. It is calculated as:
 
 ```html
 Quality = (Good Items Produced)/(Good Items Produced + Bad Items Produced)
 ```
 
-The unit of KPI is percentage.
+The unit is "percentage of good items in a batch".
 
-**Availability:** Availability is defined as percentage of time the machine was available. Normally, this does not include any time periods where there is not any planned production. However, for the sake of simplicity, we assume here that our factory operates 24x7.
+### Availability
+Availability is defined as percentage of time the machine was available. Normally, this does not include any planned downtime, however for the sake of simplicity we assume that the sample factory operates 24x7.
 
-The calculation formula is
+The calculation is as follows:
 
 ```html
 Availability = (Running Time)/(Running Time + Idle Time)
 ```
 
-The unit of KPI is percentage.
+The unit is "percentage uptime".
 
-**OEE (Operational Equipment Effectiveness):** Finally, OEE is a higher level KPI that is calculated from other KPIs above and depicts overall efficiency of equipment and manufacturing processes. The calculation formula is
+### Operational Equipment Effectiveness (OEE)
+Finally, OEE is a higher level KPI that is calculated from the other KPIs above and depicts the overall equipment efficiency of within the manufacturing process:
 
 ```html
 OEE = Availability x Quality x Performance
 ```
 
-The unit of KPI is percentage.
+The unit is "percentage efficiency".
 
+## Sample data sources and data flow
 
+The flow of data within the sample is depicted by green arrows in the following diagram.
 
-## Sample Data Sources and Flow
-
-The flow of data within the offline dashboards sample is depicted by green arrows in the following diagram.
-
-![data flow diagram](../media/dataflow.png)
+![Diagram showing the data flow of the sample](../media/dataflow.png)
 
 * Two simulators act as OPC servers
-* OPC Publisher subscribes to 3 data points in OPC Servers
-* Data collected by OPC Publisher is sent to cloud (through Edge Hub module) AND relayed to offline dashboards Node-RED module for processing.
-* Node-RED module unifies data format and writes data into InfluxDB
-* Grafana dashboards read data from InfluxDB and display dashboards to operators/users.
-* OPC Publisher, Node-RED module, InfluxDB and Grafana are all deployed as separate containers through IOT Edge runtime.
-* For sake of simplicity, two OPC simulators are also deployed as Node-RED modules in a container through IoT Edge runtime.
+* OPC Publisher subscribes to three data points in OPC Servers
+* Data collected by OPC Publisher is sent to the cloud (through the Edge Hub module) AND is relayed to offline dashboards Node-RED module for processing.
+* Node-RED module unifies the data format and writes the data into InfluxDB
+* Grafana dashboards reads the data from InfluxDB and displays dashboards to operators and users.
+* OPC Publisher, Node-RED module, InfluxDB and Grafana are all deployed as separate containers through the IOT Edge runtime.
+* For sake of simplicity, two OPC simulators are also deployed as Node-RED modules in a container through the IoT Edge runtime.
 
 ### OPC Simulator
 
-This example solution uses an [OPC simulator](https://flows.nodered.org/node/node-red-contrib-opcua) to simulate data flow coming from machines in manufacturing environment.
+This sample solution uses an [OPC simulator](https://flows.nodered.org/node/node-red-contrib-opcua) to simulate a data flow coming from machines in a manufacturing environment.
 
-OPC Simulator is a flow implemented in Node-Red. Two simulators are used to simulate two different OPC servers connected to the same IOT Edge device.
+OPC Simulator is a flow implemented in Node-Red. Two simulators are used to simulate two different OPC servers connected to the same IoT Edge device.
 
 | OPC Simulator Flow 1                          | OPC Simulator Flow 2                           |
 | --------------------------------------------- | ---------------------------------------------- |
 | ![Node-RED simulator1](../media/nodered_sim1.png) | ![Node-RED simulator 2](../media/nodered_sim2.png) |
 
-Simulators essentially have the same template but differentiated by two settings: Product URI and Port
+Simulators essentially have the same template, but differentiated by two settings: Product URI and port:
 
 |                      | Product URI | Port  |
 | -------------------- | ----------- | ----- |
@@ -76,96 +86,92 @@ Three data points are generated by the simulators:
 
 #### Data Point: STATUS
 
-STATUS indicates the current status of device that OPC server is connected to.  STATUS values are randomly generated using following rules
+STATUS indicates the current status of the device that OPC server is connected to. STATUS values are randomly generated using following rules:
 
-* Value changes at least 10min intervals
+* Value changes at least in 10 minute intervals
 * STATUS value is one of the following: 101,105,108, 102,104,106,107,109
-* STATUS Values 101, 105, 108 mean machine is running
-* STATUS Values 102,104,106,107,109 mean machine is not running
-* Random number generator ensures machine will be in RUNNING state (i.e. STATUS 101,105,108) 90% of the time
+* STATUS values 101, 105, 108 mean that the machine is running
+* STATUS values 102,104,106,107,109 mean that the machine is not running
+* A random number generator ensures that machine will be in RUNNING state (i.e. STATUS 101,105,108) 90% of the time
 
 #### Data Point: ITEM_COUNT_GOOD
 
-ITEM_COUNT_GOOD indicates number of good items (products that pass quality) produced by the machine since the last data point. It is a random whole number between 80-120. Simulators generate item counts every 5 secs. This could be taken in any unit that you wish but we will regard it as "number of items" in this example.
+ITEM_COUNT_GOOD indicates the number of good items (products that pass quality tests) produced by the machine since the last data point. It is a random integer between 80-120. Simulators generate item counts every 5 seconds. This could be taken in any unit but the sample regards it as "number of items".
 
 #### Data Point: ITEM_COUNT_BAD
 
-ITEM_COUNT_BAD indicates number of bad items (ITEMS_DISCARDED) produced by the machine since the last data point. It is a random whole number between 0-10. Simulators generate item counts every 5 secs. This could be taken in any unit that you wish but we will regard it as "number of items" in this example.
+ITEM_COUNT_BAD indicates number of bad items (ITEMS_DISCARDED) produced by the machine since the last data point. It is a random integer between 0-10. Simulators generate item counts every 5 seconds. This could be taken in any unit but the sample regards it as "number of items".
 
 ### Data Processing Module (Node-RED)
 
-Data collected from simulators by OPC publisher module are sent to Node-RED module for processing. Node-RED module does minimal processing as to validate data and convert to a suitable format and writes data into InfluxDB.
+Data collected from simulators by OPC publisher module are sent to the Node-RED module for processing. The Node-RED module does minimal processing as to validate data and convert it to a suitable format to add it into InfluxDB.
 
-During processing Application URI value is extracted from JSON data and written to "Source" tag in the database schema.
+During processing the Application URI value is extracted from JSON data and written as the "Source" tag in the database schema.
 
 ### Database (InfluxDB)
 
 All data collected flows into a single measurement (DeviceData) in a single database (telemetry) in InfluxDB. The measurement "DeviceData" has 3 fields and 1 tag:
 
-Fields
+**Fields:**
 
 * STATUS: float
 * ITEM_COUNT_GOOD: float
 * ITEM_COUNT_BAD: float
 
-Tags
+**Tags:**
 
 * Source
 
-Note that STATUS values are preserved as they come from the OPC Server. We map these values to determine if machine is running with influx queries.
+Note that STATUS values are preserved as they come from the OPC Server. These values are mapped to determine if a machine is running via InfluxDB queries.
 
-### Dashboard: Site Level Performance
+## Site Level Performance dashboard
 
-Site Level Performance dashboard displays key manufacturing KPIs (OEE, Availability, Quality, Performance) per site.  
+The Site Level Performance dashboard displays the manufacturing KPIs (OEE, Availability, Quality, Performance) per site.
 
 ![dashboard](../media/dashboard.png)
 
-**Site** is basically defined as the OPC server that provides data and uses OPC Server's Product URI as the site name (Source). See Node-RED module code for algorithm extracting Product URI from Node Id. 
+**Site** is basically defined as the OPC server providing the data and uses OPC Server's Product URI as the site name (Source). See the Node-RED module code for an algorithm to extract the Product URI from Node Id.
 
-In real implementations site will correspond to a specific equipment or asset. 
+In a production implementations the site name will correspond to a specific equipment or asset.
 
-In the sample application we have two different sites that corresponding to two OPC Simulators
+The sample application defines two different sites, corresponding to the two OPC Simulators.
 
 ![sitecombo](../media/sitecombo.png)
 
-**Ideal run rate** is the ideal capacity of production for the equipment. It is used to calculate Performance KPI. See definition for Performance KPI for the calculation method.
+**Ideal run rate** is the ideal capacity of production for the given equipment. It is used to calculate the Performance KPI. See above for the calculation method.
 
 ![idealrunrate](../media/idealrunrate.png)
 
-Each row in the dashboard represents a KPI. The gauge on the left-hand side gives calculation of KPI as per the time window selected. In the example screenshot above, selected time window is "Last 12 hours". Therefore, the left top gauge for OEE KPI says that OEE value is at 54.23% for the last 12 hours.
+Each row in the dashboard represents a KPI. The gauge on the left-hand side reports the KPI result as per selected time window. In the sample screenshot above, the time window is "Last 12 hours". Therefore the top left gauge for OEE states that the value is at 54.23% for the last 12 hours.
 
 ![timeinterval](../media/timeinterval.png)
 
-Normally operators would like to monitor KPIs for their current shift. To do that the operator has to set start of time period as start of their shift and leave end of time period as "now()", as shown in the snapshot below
+In a production environment operators would typically monitor KPIs for their current shift. To do that the operator has to set the period start time in line with their shift and leave the end period as "now()":
 
 ![timeinterval2](../media/timeinterval2.png)
 
-To make it easier, line graphs on the right column has vertical lines on 12:00AM, 08:00AM and 04:00PM to indicate working shift changes in our fictional facility.
+Line graphs show indicators at 12:00AM, 08:00AM and 04:00PM to highlight working shift changes in the fictional manufacturing floor.
 
-Following table depicts details of each element in the dashboard
+Following table depicts details of each element in the dashboard:
 
 | Dashboard Element                                            |                     Snapshot                      |
 | ------------------------------------------------------------ | :-----------------------------------------------: |
-| OEE gauge shows OEE KPI for the time period selected.        |          ![OOEgauge](../media/OEEgauge.png)          |
-| OEE graph shows OEE value change across time period selected. Minimum, Maximum, Average values of OEE across time period are provided in the legend. |          ![oeegraph](../media/oeegraph.png)          |
-| Availability gauge shows Availability KPI for the time period selected. | ![availabilitygauge](../media/availabilitygauge.png) |
-| Availability graph shows Availability value change across time period selected. Minimum, Maximum, Average values of Availability across time period are provided in the legend. The blue line indicates when machine was actually running. | ![availabilitygraph](../media/availabilitygraph.png) |
-| Quality gauge shows Quality KPI for the time period selected. |      ![qualitygauge](../media/qualitygauge.png)      |
-| Quality graph shows Quality value change across time period selected on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured, as green line) as well as "Bad Items" produced (items that are discarded, as red line) aligned to right axis. Contrary to Quality KPI "Good Items"  and "Bad Items" are aggregated at the minute level and their unit is number of items/min. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. |      ![qualitygraph](../media/qualitygraph.png)      |
-| Performance gauge shows Performance KPI for the time period selected. |  ![performancegauge](../media/performancegauge.png)  |
-| Performance graph shows Performance value change across time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. |  ![performancegraph](../media/performancegraph.png)  |
+| The OEE gauge shows the Operational Equipment Effectiveness for the selected time period.        |          ![OOEgauge](../media/OEEgauge.png)          |
+| OEE graph shows the change across the selected time period. Minimum, Maximum, Average values of OEE across time period are provided in the legend. |          ![oeegraph](../media/oeegraph.png)          |
+| The availability gauge shows Availability for the time period selected. | ![availabilitygauge](../media/availabilitygauge.png) |
+| Availability graph shows value changes over the time period selected. Minimum, Maximum, Average values of Availability across time period are provided in the legend. The blue line indicates when a machine was actually running. | ![availabilitygraph](../media/availabilitygraph.png) |
+| The quality gauge shows Quality for the time period selected. |      ![qualitygauge](../media/qualitygauge.png)      |
+| Quality graph shows value change over the selected time period on the left axis. It also shows the number of "Good Items" produced (items that are properly manufactured) as a green line - as well as "Bad Items" produced (items that are discarded) asa  red line. Note that the "Good Items" and "Bad Items" are aggregated at the minute level and their unit is "number of items per minute". The "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference aligned to the right axis. Minimum, Maximum, Average values of Quality, Good Items and Bad Items are provided in the legend. |      ![qualitygraph](../media/qualitygraph.png)      |
+| Performance gauge shows the Performance for the time period selected. |  ![performancegauge](../media/performancegauge.png)  |
+| The performance graph shows the change in Performance for the time period selected. Minimum, Maximum, Average values of Performance across time period are provided in the legend. The "Ideal Run Rate" parameter value, entered manually at the top of dashboard, is shown as a reference line, again, aligned to the right axis. |  ![performancegraph](../media/performancegraph.png)  |
 
-#### Building "Site Level Performance" Dashboard 
+### Building the "Site Level Performance" dashboard
 
-##### Variables
+#### Variables
 
-Dashboard is defined with two variables:
+`$idealRunrate` is defined as a constant value (1400) which indicates the ideal throughput of the equipment/asset. This variable is used to calculate Performance and Quality.
 
-*$idealRunrate* is defined as a constant value (1400) which indicates the ideal throughput of the equipment/asset. This variable is used to calculate Performance KPI and Quality KPI.
-
-*$Source* is defined as a query from influxdb database which pulls available "Source" tags from "DeviceData" measurement. This is essentially a list of assets we have measurements in the selected time range ($range).
-
-`
+`$Source` is defined as a query from influxdb database which pulls available "Source" tags from "DeviceData" measurement. This is essentially a list of assets we have measurements in the selected time range (`$range`).
 
 ```
 from(bucket: "telemetry")
@@ -175,35 +181,33 @@ from(bucket: "telemetry")
   |> distinct(column: "Source")
 ```
 
-##### Panels
+#### Panels
 
-Dashboard contains 8 panels which are built on different but similar Flux queries from the same data source. Most comprehensive of these queries is used in OEE History since OEE calculation actually involves calculating other KPIs. (see Manufacturing KPIs above)
-
-###### OEE History Panel
+The dashboard contains 8 panels which are built on similar Flux queries of the same data source. The most comprehensive of these queries is used in the "OEE History" since calculating the OEE actually involves processing other KPIs. See [KPI types](#kpi-types) above.
 
 ![](..\media\oeegraph.png)
 
-OEE History panel uses following Flux query.
-
-Import "math" and "csv" packages and define mapping for STATUS field values. Here it says that STATUS values 101,105 and 108 will be considered as asset is in RUNNING state.
+The following section examines the Flux query for the "OEE History" panel in detail.
 
 ```
 import "math"
 
 import "csv"
+```
 
+Define that the STATUS values 101,105 and 108 will be considered as "asset is in RUNNING state".
+
+```
 StatusValuesForOn = [101,105,108]
 ```
 
-
-
-*fGetLastStatus* function finds the last STATUS value before currently displayed time range. Simulator changes STATUS values every 10 minutes and OPC Server does not publish if the new value is the same as previous one. At any time, STATUS value should be considered as the last set value.  
+The `fGetLastStatus` function finds the last STATUS value in the relevant time range. The simulator changes the STATUS value every 10 minutes, however the OPC Server does not publish it unless the new value is different than the previous one. At any time, STATUS value should be considered as the "last set value".
 
 ```
 fGetLastStatus = () => {
 ```
 
-We define a dummy record to avoid error from tableFind function later.
+A dummy record is defined to avoid errors from the `tableFind` function later.
 
 ```
 dummyRecordCsv = "#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string\n#group,false,false,true,true,false,false,true,true,true\n#default,_result,,,,,,,,\n,result,table,_start,_stop,_time,_value,Source,_field,_measurement\n,,0,2030-01-01T00:00:00.0Z,2030-01-01T00:00:00.0Z,2030-01-01T00:00:00.0Z,0,,STATUS,DeviceData"
@@ -211,7 +215,7 @@ dummyRecordCsv = "#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTi
 dummyRecord=csv.from(csv: dummyRecordCsv )
 ```
 
-First we find the first STATUS value in the current time range, for the selected asset ([[Source]]) 
+Find the first STATUS value in the currently selected time range and for the selected asset (source).
 
 ```
 firstStatusTimestampTemp=
@@ -223,7 +227,7 @@ firstStatusTimestampTemp=
   |> first()
 ```
 
-We then union the result with a dummy record so that result will have at least one table even if we don't have any STATUS values in the current time range ([[range]]) . Otherwise tableFind function raises error.
+Then union the result with the dummy record so that the result will have at least one table, even if there aren't any STATUS values in the current range.
 
 ```
 firstStatusTimestamp=
@@ -232,7 +236,7 @@ firstStatusTimestamp=
   |> getColumn(column: "_time")
 ```
 
-Then we search for the last (latest) STATUS value before the first (oldest) STATUS value we have in selected time range. Note that in later versions of Grafana connector (7.0+) for Flux, you don't need to search for the first value in range, you can just use the start of time range moniker (*v.timeRangeStart*) and search for latest status value before *v.timeRangeStart*. 
+Search for the last (latest) STATUS value and the first (oldest) STATUS value in selected time range. Note that in later versions of the Grafana connector (7.0+) for Flux, it isn't required to search for the first value in range. 
 
 ```
 lastStatusBeforeRangeTemp=
@@ -252,9 +256,7 @@ from(bucket: "telemetry")
   |> last()
 ```
 
-
-
-Union the result with a dummy record so that result will have at least one table even if we don't have any STATUS values before current time range ([[range]]) . Otherwise *tableFind* function raises error.
+Again, union the result with a dummy record so that the result will have at least one table.
 
 ```
 lastStatusBeforeRange=
@@ -263,14 +265,14 @@ lastStatusBeforeRange=
   |> getColumn(column: "_value")
 ```
 
-  Finally following returns the latest STATUS value (as 1 or 0)
+The following will return the latest STATUS value (as 1 or 0).
 
 ```
 return lastStatusBeforeRange[length(arr:lastStatusBeforeRange)-1]
 }
 ```
 
-Filter all Fields (measurements: ITEM_COUNT_GOOD, ITEM_COUNT_BAD, STATUS) for the selected time range ([[range]]) and selected asset ([[Source]]). This is our base query template.
+Filter all fields (aka measurements: ITEM_COUNT_GOOD, ITEM_COUNT_BAD, STATUS) for the selected time range and selected asset source. This will be the base query template.
 
 ```
 DeviceData=from(bucket: "telemetry")
@@ -281,7 +283,7 @@ DeviceData=from(bucket: "telemetry")
   |> keep(columns: ["_time","_field","_value"])
 ```
 
-Extract field ITEM_COUNT_GOOD, sum them in 1minute intervals and calculate cumulative sum.
+Extract the field ITEM_COUNT_GOOD, adding values in one minute intervals and calculating the cumulative sum.
 
 ```
 ItemCountGoodData=
@@ -291,9 +293,7 @@ ItemCountGoodData=
   |> cumulativeSum()
 ```
 
-
-
-Extract field ITEM_COUNT_BAD, sum them in 1minute intervals and calculate cumulative sum.
+Extract the field ITEM_COUNT_BAD, adding values in one minute intervals and calculating the cumulative sum.
 
 ```
 ItemCountBadData=
@@ -303,7 +303,7 @@ ItemCountBadData=
   |> cumulativeSum()
 ```
 
-Extract field STATUS, convert STATUS values to 0.0 or 1.0.  STATUS values in set StatusValuesForOn are mapped to 1.0 rest are mapped to 0.0. 
+Extract the field STATUS, converting the values to 0.0 or 1.0. STATUS values in the set `StatusValuesForOn` (see above) are mapped to 1.0, all other are mapped to 0.0. 
 
 ```
 StatusData=
@@ -317,9 +317,7 @@ StatusData=
   }))
 ```
 
-
-
-Extract field STATUS, average them in 1minute intervals. If average is >0 for any 1 minute interval, we consider that asset is running in that interval .
+Extract the field STATUS again, averaging the values in one minute intervals. If the average is > 0 for any 1 minute interval, it is assumed that the asset is running within this interval.
 
 ```
 StatusDataWindowed=
@@ -332,7 +330,7 @@ StatusDataWindowed=
   |> map(fn: (r) => ({_time: r._time, _value: math.ceil(x: r._value)}))
 ```
 
-  Calculate cumulative sum over STATUS so that each row gives number of running minutes from the start of range.
+Calculate the cumulative sum over STATUS so that each row shows the minutes of uptime (= running) since the start of the range.
 
 ```
 RunningMins=
@@ -340,7 +338,7 @@ RunningMins=
   |> cumulativeSum()
 ```
 
-Calculate cumulative sum over negated STATUS so that each row gives number of idle minutes from the start of range
+Calculate the cumulative sum over the negated STATUS so that each row shows the sum of idle minutes from the start of the range.
 
 ```
 IdleMins=
@@ -352,13 +350,11 @@ IdleMins=
   |> cumulativeSum()
 ```
 
-Now we have all datasets needed to calculate actual KPIs so we go ahead for KPI calculations. Using cumulativeSum in calculations above will enable us to calculate all these KPIs so that each value in dataset represents KPI from the start of time range up to that row. This is especially useful because operators care most about KPI calculations in their shift and now they can set dashboard start time to the start of their shift and monitor KPIs for the tımeframe they are accountable.
+The values above represent the base datasets used to calculate the KPIs.
 
-Availability is defined as percentage of time equipment is running in planned production time. For sake of simplicity we assume production is planned 24x7 so we need to calculate 
+Using `cumulativeSum` with the calculations above allows to calculate [all defined KPIs](#kpi-types) within the time range up to that row.
 
-​                      Total Running Time/(Total Running Time+Total Idle Time) 
-
- The result dataset contains a row for every minute from start of range and a _value in every row which gives the availability calculation from the start from time range
+For Availability the result dataset contains a row for every minute from the start of the range and a _value in every row that represents the respective availability result.
 
 ```
 Availability=
@@ -374,9 +370,7 @@ Availability=
      }))
 ```
 
-​    
-
-Quality is defined as amount of good quality items produced (as opposed to defective items) over total amount produced. 
+The same is true for Quality. 
 
 ```
 Quality=
@@ -392,9 +386,7 @@ Quality=
      }))
 ```
 
-
-
-Performance is defined as amount of good quality items produced during time asset was running  compared to asset's ideal capacity ($idealRunrate) produced
+For Performance `$idealRunrate` represents the assets ideal production capacity.
 
 ```
 Performance=
@@ -412,9 +404,9 @@ Performance=
     }))
 ```
 
-Now that we have our base KPIs (Availability, Quality, Performance) ready we can move on to calculating OEE. Note that all KPIs come in a dataset with _time and each _value indicates KPI value from the start of time range ([[range]]).
+The OEE is calculated from these base KPIs. Note that all KPIs are defined in a dataset containing the _time and _value.
 
-For this purpose, we need to join 3 KPI datasets. Since Flux does not support more than 2 table joins we will use a temporary dataset to join Availability and Quality first.
+Since Flux does not support more than 2 table joins, this uses a temporary dataset to join Availability and Quality first.
 
 ```
 AxQ=
@@ -429,7 +421,7 @@ AxQ=
     }))
 ```
 
-Then we will join temporary dataset with Performance KPI to calculate OEE
+Then join the temporary dataset with Performance to calculate the OEE:
 
 ```
 OEE=
@@ -445,11 +437,9 @@ OEE=
   |> yield(name: "OEE") // use yield function to materialize dataset
 ```
 
-###### OEE Gauge
+The OEE Gauge displays the value from the start to the end of of the selected range. Therefore its Flux query contains `sum()` instead of `cumulativeSum()` as the desired datasets should contain only one record rather than a record for every minute.
 
-OEE Gauge displays KPI value from the start of [[range]] to the end of [[range]]. Therefore, its Flux query basically contains sum() instead of *cumulativeSum()* and resulting datasets contain one record rather than a record for every minute.
-
-Below is the Flux query for OEE Gauge with differences from OEE History panel query marked with `//****`.
+Below is the Flux query for the OEE Gauge. The differences in the query are marked with `//****`.
 
 ```
 import "math"
@@ -621,10 +611,3 @@ OEE=
     }))
   |> yield(name: "OEE")
 ```
-
-
-
-
-
-
-
