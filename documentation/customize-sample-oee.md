@@ -187,7 +187,7 @@ Note that above sample sets `UseSecurity: false`, which is not recommended in pr
 
 ### Adding the Site Level Performance to the dashboard
 
-The followinf dashboard panels require the running status of asset:
+The following dashboard panels require the running status of asset:
 
 1. OEE Gauge
 1. OEE History

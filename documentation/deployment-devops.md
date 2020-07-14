@@ -42,7 +42,7 @@ The DevOps pipeline details for the sample are included in [the github repositor
 
 ## Setting up an Azure DevOps organization and project
 
-A Azure DevOps pipeline is always part of a [project](https://docs.microsoft.com/en-us/azure/devops/organizations/projects/create-project?view=azure-devops&tabs=preview-page), which is part of an [organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops). Follow the instructions on the given websites, but skip the 'Add a Repository to your Project' part since this is managed on GitHub.
+An Azure DevOps pipeline is always part of a [project](https://docs.microsoft.com/en-us/azure/devops/organizations/projects/create-project?view=azure-devops&tabs=preview-page), which is part of an [organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops). Follow the instructions on the given websites, but skip the 'Add a Repository to your Project' part since this is managed on GitHub.
 
 Before adding the pipeline there are two project-level preliminary tasks.
 
@@ -73,26 +73,6 @@ Click on Pipelines from the left-nav and then select "Create Pipeline".
   * Select "Approve & Install Azure Pipelines" if required
 * From the "review your pipeline" screen, click the down-arrow next to Run and click "Save" - note that a number of variables need to be added before the first run
 
-### Update pipeline target condition
-
-At the very bottom of the pipeline look for the following line:
-
-```yaml
-        targetcondition: '*'
-```
-
-This sets the target condition for the automated deployment. By default, it targets every Edge box in the IoT Hub.
-Earlier we added some target tags to our Edge box's device twin that we want to target. 
-Edit the `targetcondition` to the tags [created earlier](#preparation-of-edge-boxes-and-iot-hub).
-
-For the example given above, the `targetcondition` would look like this:
-
-```yaml
-        targetcondition: 'tags.dashboard=true'
-```
-
-Save the pipeline after adding all tags.
-
 ### Set the pipeline environment variables
 
 To make the pipeline as generic as possible, much of the config is supplied in the form of environment variables. To add these variables, click on "Variables" in the upper right hand corner of the "Edit Pipeline" screen. Add the following variables and values:
@@ -103,7 +83,7 @@ To make the pipeline as generic as possible, much of the config is supplied in t
 * AZURE_SUBSCRIPTION_ID: The ID of the used Azure subscription
 * GRAFANA_ADMIN_PASSWORD: The desired administrator password for the Grafana dashboard web app when deployed
 * IOT_HUB_NAME: The name of the connected Azure IoT Hub (short name, without the .azure-devices.net)
-* DEPLOYMENT_TARGET_CONDITION: The target condition to use for the deployment. For example, for the tag example above, use 'tags.dashboard=true'.
+* DEPLOYMENT_TARGET_CONDITION: The target condition to use for the deployment. This is in line with the target tags for the Edge box's device twin. Based on the tag used above, the valuewould be 'tags.dashboard=true'.
 * Click "Save"
 
 ## Executing the pipeline

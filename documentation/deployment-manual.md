@@ -22,7 +22,7 @@ Start by cloning [the github repository](https://github.com/AzureIoTGBB/iot-edge
 git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
 ```
 
-Replace `{registry}` in the commands below with the container registry location on your machine (e.g. myregistry.azurecr.io).
+Replace `{registry}` in the commands below with the container registry location created earlier (e.g. myregistry.azurecr.io).
 
 ```bash
 sudo docker login {registry}
