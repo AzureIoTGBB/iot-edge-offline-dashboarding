@@ -83,7 +83,7 @@ To make the pipeline as generic as possible, much of the config is supplied in t
 * AZURE_SUBSCRIPTION_ID: The ID of the used Azure subscription
 * GRAFANA_ADMIN_PASSWORD: The desired administrator password for the Grafana dashboard web app when deployed
 * IOT_HUB_NAME: The name of the connected Azure IoT Hub (short name, without the .azure-devices.net)
-* DEPLOYMENT_TARGET_CONDITION: The target condition to use for the deployment. This is in line with the target tags for the Edge box's device twin. Based on the tag used above, the valuewould be 'tags.dashboard=true'.
+* DEPLOYMENT_TARGET_CONDITION: The target condition to use for the deployment. This is in line with the target tags for the Edge box's device twin. Based on the tag used above, the value would be 'tags.dashboard=true'.
 * Click "Save"
 
 ## Executing the pipeline
