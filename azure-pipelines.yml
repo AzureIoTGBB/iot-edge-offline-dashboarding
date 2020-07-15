@@ -6,7 +6,7 @@ trigger:
   paths:
     exclude:
     - readme.md
-    - docs/*
+    - documentation/*
     - media/*
 
 pr:

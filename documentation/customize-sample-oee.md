@@ -1,15 +1,21 @@
 
-# Customizing the offline dashboarding solution
+# Customizing the IoT Offline Dashboarding sample
 
-## Component Configuration
+The components in the solution are driven by configuration files, contained in and deployed via their corresponding Docker images. This allows customizing the dashboard, by simply updating the corresponding dashboard configuration file and redeploying (possibly 'at scale') the respective images.
 
-Each of the components in the solution are driven by configuration files contained in and deployed via their corresponding Docker images. As seen earlier in the deployment sections, all configuration of the solution is done via files included in the Docker images.  This allows you to update the dashboard, for example, by updating the corresponding dashboard configuration file and redeploying (possibly 'at scale') the corresponding images.
+> [!NOTE]
+> This page describes customization within the defined manufacturing scenario. If you are interested in adapting the sample for other industries or use cases, please see [Customizing the dashboard sample for other use cases](customize-sample-other.md).
 
-## Connecting Assets/OPC Servers
+**Table of contents**
+* [Connecting assets / OPC servers](#connecting-assets-/-opc-servers)
+* [Adding a new asset (basic scenario)](#adding-a-new-asset-basic-scenario)
+* [Adding a new asset (complex scenario)](#adding-a-new-asset-complex-scenario)
 
-### Removing Simulators
+## Connecting assets / OPC servers
 
-- Modify publishedNodes.json file and remove two nodes below. Data will stop flowing into database.
+### Removing simulators
+
+To remove the simulators, modify the `publishedNodes.json` file found in `modules\opcpublisher` and remove the two nodes shown below. Their data will stop flowing into the database.
 
 ```json
  [
@@ -64,32 +70,35 @@ Each of the components in the solution are driven by configuration files contain
  ]
 ```
 
-- Delete measurement to remove old records from influxdb
+Afterwards, delete the previously added telemetry records from InfluxDB:
 
 ```sql
 DROP MEASUREMENT DeviceData
 ```
 
-Note that edge-to-flux flow automatically creates measurement if it does not exists.
+Note that edge-to-flux flow automatically creates measurements if it does not exists.
 
-- Remove "opcsimulator" module from deployment
+Finally, remove the "opcsimulator" module from deployment.
 
 ### Adding a new asset (basic scenario)
 
-If you have an OPC Server installed and connected to a real asset/equipment and you published 3 data points (STATUS, ITEM_COUNT_GOOD, ITEM_COUNT_BAD) from OPC Server you can follow steps below to onboard you new asset:
+The following steps assume an OPC Server, installed and connected to real assets and equipment, that publishes three data points (`STATUS`, `ITEM_COUNT_GOOD`, `ITEM_COUNT_BAD`).
 
-#### Configure your OPC UA Server
+#### Configuring the OPC UA server
 
-- Configure your OPC UA server to publish following data points with numeric data types.
-  - STATUS (double)
-  - ITEM_COUNT_GOOD (double)
-  - ITEM_COUNT_BAD (double)
-- Note "NodeId" values for all 3 data points to be used in publishedNodes.json file.
-- Configure security
+Configure the OPC UA server to publish the following data points with numeric data types:
 
-#### Modify publishedNodes.json file
+1. STATUS (double)
+1. ITEM_COUNT_GOOD (double)
+1. ITEM_COUNT_BAD (double)
 
-publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publisher module. The file can be found at modules\opcpublisher folder.  By default publishedNodes.json file lists two simulators and 3 nodes from each simulator:
+Note down the "NodeId" values for all three data points, which are used in the `publishedNodes.json` configuration file.
+
+Configure the security aspects to make sure the solution has access.
+
+#### Adding nodes to the solution
+
+The `publishedNodes.json` configuration file contains the OPC UA nodes to be monitored by the OPC Publisher module. The file can be found in `modules\opcpublisher`. By default the configuration contains two simulators (see above) and three nodes for each simulator:
 
 ```json
   [
@@ -144,7 +153,7 @@ publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publishe
  ]
 ```
 
-To edit the file add a new server node at the end of the file along with 3 nodes (STATUS, ITEM_COUNT_GOOD, ITEM_COUNT_BAD). The new node should look similar to
+Add any new server node at the end of the file, along with the three data nodes (`STATUS`, `ITEM_COUNT_GOOD`, `ITEM_COUNT_BAD`). The new node should look similar to:
 
 ```json
  {
@@ -174,42 +183,44 @@ To edit the file add a new server node at the end of the file along with 3 nodes
 
 ```
 
-Note that above sample uses "UseSecurity: false" setting which is not recommended in production environments.
+Note that above sample sets `UseSecurity: false`, which is not recommended in production environments.
 
-### Modify Dashboard: Site Level Performance
+### Adding the Site Level Performance to the dashboard
 
-Dashboard panels that require running status of asset are below
+The following dashboard panels require the running status of asset:
 
 1. OEE Gauge
-2. OEE History
-3. Availability Gauge
-4. Availability History
-5. Performance Gauge
-6. Performance History
+1. OEE History
+1. Availability Gauge
+1. Availability History
+1. Performance Gauge
+1. Performance History
 
-Each of these panels use a mapping set defined in the beginning of query as below, meaning if STATUS is 101, 105 or 108 we will consider asset to be running for KPI calculations.
+Each of these panels use a mapping set, which is defined in the query below, meaning if `STATUS` is 101, 105 or 108, the dashboard will consider the asset to be relevant for the [KPI calculations](manufacturing-kpis.md).
 
 ```sql
 StatusValuesForOn = [101,105,108]
 ```
 
-You would need to modify these values in each panel's query  to reflect STATUS values that indicate RUNNING state of your asset.
+Modify these values in each panel's query to reflect `STATUS` values that indicate the `RUNNING` state of any asset.
 
-After modification, save dashboard JSON file (dashboard->settings->JSON Model) under "modules\grafana\grafana-provisioning\dashboards" and rebuild deployment.
+After modification, save the dashboard JSON file (`dashboard->settings->JSON Model`) under `modules\grafana\grafana-provisioning\dashboards` and rebuild deployment.
 
 ### Adding a new asset (complex scenario)
 
-#### Configure your OPC UA Server
+#### Configuring the OPC UA server
 
-- Configure your OPC UA server to publish any data points you would like.
-- Note "NodeId" values for all data points to be used in publishedNodes.json file.
-- Configure security
+Configure the OPC UA server to publish any desired data points.
 
-#### Modify publishedNodes.json file
+Note down the "NodeId" values for all three data points, which are used in the `publishedNodes.json` configuration file.
 
- publishedNodes.json  file indicates OPC UA nodes to be monitored by OPC Publisher module. The file can be found at modules\opcpublisher folder. You may want to remove simulator as described above before moving forward.
+Configure the security aspects to make sure the solution has access.
 
-Add new node definitions including any security settings you have configured. Below sample uses "UseSecurity: false" setting which is not recommended in production environments.
+#### Adding nodes to the solution
+
+The `publishedNodes.json` configuration file contains the OPC UA nodes to be monitored by the OPC Publisher module. The file can be found in `modules\opcpublisher`. By default the configuration contains two simulators (see above) and three nodes for each simulator:
+
+Add new node definitions including any security settings required. Note that the sample below sets `UseSecurity: false`, which is not recommended in production environments.
 
 ```json
 [
@@ -233,9 +244,9 @@ Add new node definitions including any security settings you have configured. Be
 
 ```
 
-#### Modify Flow: edge-to-influx
+#### Modify how IoT messages are received
 
-edge-to-influx flow basically receives IoT message and formats it into an upsert command for influx.  Below implementation handles various differences between OPC Publisher versions.
+The edge-to-influx flow receives IoT messages and formats them into an upsert command for InfluxDB. The implementation below handles various differences between different OPC Publisher versions.
 
 ```javascript
 //type checking
@@ -356,7 +367,7 @@ return msg;
 
 ```
 
-The result JSON that is sent to influx looks like below
+The resulting JSON is sent to InfluxDB:
 
 ```json
 [
@@ -374,15 +385,16 @@ The result JSON that is sent to influx looks like below
 ]
 ```
 
-Here are a few tips creating JSON message
+Here are a few tips creating JSON messages:
 
-- It is a JSON array which may contain multiple tuples
-- "measurement" is similar to table name, you may insert data into different measurements.
-- "fields" are actual metrics/data points that are identified by time stamp and tag values
-- You may use multiple field values in a single message. You may also use separate messages for different fields. As long as, timestamp and tag values are the same, these are considered to be part of same tuple.
-- "tags" are values that describe the metric. Such as which asset it is or where it is located. You can use this flow to further contextualize your data by accessing other LOB systems and merging data into same tuple as a tag.
-- You can use timestamp value from source OPC Server or create your own value here, according to your solution requirements.  
+* Use a JSON array as a root that may contain multiple tuples
+* `"measurement"` refers to the table name to insert data into different measurement buckets.
+* `"fields"` are actual metrics / telemetry / data points that are identified by timestamp and tag values
+* Use multiple field values in a single message
+* Alternatively, use separate messages for different fields. As long as the timestamp and tag values are the same, these are considered to be part of same tuple.
+* `"tags"` are values that describe the metric, for example to identify or locate the asset. Use this flow to further contextualize the data by accessing other LOB systems and merging data into same tuple as a tag.
+* Use the `timestamp` value from the source OPC Server or create a separate value, according to your use case.
 
-#### Modify Dashboard: Site Level Performance
+#### Modifying the dashboard: Site Level Performance
 
-When you change data fields, dashboard and panels all need to be re-designed and queries modified.  See [Manufacturing KPIs](/docs/manufacturing_kpis.md) for a guidance on how dashboards are built.
+When changing data fields, the dashboard and all panels need to be re-designed and the respective queries modified. See [Manufacturing KPIs](/documentation/manufacturing-kpis.md) for a guidance on how the dashboards are built.
