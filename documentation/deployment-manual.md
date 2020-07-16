@@ -3,10 +3,14 @@
 This document describes how to deploy the IoT Offline Dashboarding sample manually on an Edge device. Chose this option to gain a deep understanding of every required step involved in deploying the sample.
 
 **Table of contents**
-* [Preparation of Edge boxes and IoT Hub](#preparation-of-edge-boxes-and-iot-hub)
-* [Building all Edge module images](#building-all-edge-module-images)
-* [Deploying all Edge modules](#deploying-all-edge-modules)
-* [See also](#see-also)
+- [Deploy the IoT Offline Dashboarding sample manually](#deploy-the-iot-offline-dashboarding-sample-manually)
+  - [Preparation of Edge boxes and IoT Hub](#preparation-of-edge-boxes-and-iot-hub)
+  - [Building all Edge module images](#building-all-edge-module-images)
+  - [Deploying all Edge modules](#deploying-all-edge-modules)
+    - [Adding the Edge modules](#adding-the-edge-modules)
+    - [Adding the routes](#adding-the-routes)
+    - [Deploying modules to devices](#deploying-modules-to-devices)
+  - [See also](#see-also)
 
 ## Preparation of Edge boxes and IoT Hub
 
@@ -16,7 +20,7 @@ This document describes how to deploy the IoT Offline Dashboarding sample manual
 
 Before any Edge modules can be deployed, it is necessary to build the module images using the Dockerfiles found in the repository. Once built, the images need to be placed into a container registry.
 
-Start by cloning [the github repository](https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding) to your local machine.
+Start by cloning [the github repository](https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding) to a machine that has docker installed (possibly the Iot Edge VM device you created above, or a local development machine)..
 
 ```bash
 git clone https://github.com/AzureIoTGBB/iot-edge-offline-dashboarding.git
@@ -72,7 +76,7 @@ In the "IoT Edge Modules" section, click the "+ Add" button and select "IoT Edge
 }
 ```
 
-Click the "Add" button to complete the creation of the module for it to be deployed. This needs to be repeated for all other four remaining modules. The following are the property values for each module.
+Click the "Add" button to complete the creation of the module for it to be deployed. This needs to be repeated for all other four remaining modules. The following are the property values for each module.  Note: the variable {GF_SECURITY_ADMIN_PASSWORD} represents the admin password that you will use to log into the Grafana dashboards once deployment is complete.
 
 **Module grafana:**
 

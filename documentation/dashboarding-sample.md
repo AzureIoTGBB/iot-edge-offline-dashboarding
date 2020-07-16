@@ -9,12 +9,14 @@ More information on the deployment of the sample can be found [here](#deployment
 For guidance on how to customize the sample for other use cases, please see the [customization](#customizing-the-sample-for-other-use-cases) section below.
 
 **Table of contents**
-* [Business need](#business-need)
-* [Solution architecture](#solution-architecture)
-* [Understanding the sample data, calculations, and dashboard elements](#understanding-the-sample-data,-calculations,-and-dashboard-elements)
-* [Deploying the sample](#deploying-the-sample)
-* [Customizing the sample](#customizing-the-sample)
-* [Known issues](#known-issues)
+- [IoT Offline Dashboarding sample](#iot-offline-dashboarding-sample)
+  - [Business need](#business-need)
+  - [Solution architecture](#solution-architecture)
+  - [Understanding the sample data, calculations, and dashboard elements](#understanding-the-sample-data-calculations-and-dashboard-elements)
+  - [Deploying the sample](#deploying-the-sample)
+    - [View the Grafana dashboard](#view-the-grafana-dashboard)
+  - [Customizing the sample](#customizing-the-sample)
+  - [Known issues](#known-issues)
 
 ## Business need
 
@@ -26,7 +28,7 @@ Most manufacturers start their journey by providing visibility across machines, 
 
 Different stakeholders will then make use of that platform to cater their own needs e.g planning department doing global planning or engineers monitoring and fine-tuning production phases.
 
-Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communications to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communications to cloud is broken and sent to the industrial IoT platform when facility is restored. But how can users access real time information in the meanwhile?
+Operators and users that are responsible for monitoring of operations are at the top of industrial IoT stakeholders list. They are usually responsible for well-being of operations and processes and need to have access to information in real-time. On the other hand, we also know that means of communication (infrastructure) is less than perfect in many manufacturing facilities. Although, we can provide real time access in the industrial IoT platform, what would happen if communication to cloud is cut-off? In terms of data reliability, Azure IoT Edge ensures data is accumulated when communication to cloud is broken and sent to the industrial IoT platform when cloud communication is restored. But how can users access real time information in the meanwhile?
 
 There are two major concerns this sample implementation addresses:
 
