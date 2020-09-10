@@ -6,9 +6,9 @@ FROM nodered/node-red
 RUN npm install node-red-contrib-opcua-server
 
 # Copy Node-RED project files into place
-COPY settings.js ./settings.js
-COPY flows_cred.json ./flows_cred.json
-COPY flows.json ./flows.json
+COPY settings.js /data/settings.js
+COPY flows_cred.json /data/flows_cred.json
+COPY flows.json /data/flows.json
 
 EXPOSE 1880/tcp
 
