@@ -68,18 +68,31 @@ Copy the value of the `connectionString` from the JSON output and save it. The c
 
 ### Create and configure an IoT Edge VM
 
-The sample can be run on a [physical IoT Edge device](https://catalog.azureiotsolutions.com/) or a virtual machine. Microsoft provides a [virtual machine image based on Ubuntu](https://azuremarketplace.microsoft.com/marketplace/apps/microsoft_iot_edge.iot_edge_vm_ubuntu) that has everything preinstalled to run Azure IoT Edge on a device. Accept the terms of use and create the virtual machine using the following command:
+The sample can be run on a [physical IoT Edge device](https://catalog.azureiotsolutions.com/) or a virtual machine. The following command will create an Ubuntu Linux VM, deploy Azure IoT Edge v1.2 and connect it to the IoT Hub instance/device given in the "deviceConnectionString" 
 
-```bash
-az vm image terms accept --urn microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest
-
-az vm create --resource-group {resource_group} --name myEdgeVM --image microsoft_iot_edge:iot_edge_vm_ubuntu:ubuntu_1604_edgeruntimeonly:latest --admin-username azureuser --generate-ssh-keys
+```Bash 
+az deployment group create \
+--name edgeVMDeployment \
+--resource-group {resource_group} \
+--template-uri "https://raw.githubusercontent.com/Azure/iotedge-vm-deploy/1.2.0/edgeDeploy.json" \
+--parameters dnsLabelPrefix='myedgevm' \
+--parameters adminUsername='azureuser' \
+--parameters deviceConnectionString=$(az iot hub device-identity connection-string show --device-id myEdgeDevice --hub-name {hub_name} -o tsv) \
+--parameters authenticationType='sshPublicKey' \
+--parameters adminPasswordOrKey="$(< ~/.ssh/id_rsa.pub)"
 ```
 
-Use the primary device connection string noted above to connect the IoT Edge device (or VM) to the IoT Hub.
-
-```bash
-az vm run-command invoke -g {resource_group} -n myEdgeVM --command-id RunShellScript --script "/etc/iotedge/configedge.sh '{device_connection_string}'"
+If you want to use username and password based authentication instead of ssh keys, here's the command you can use
+```Bash 
+az deployment group create \
+--name edgeVMDeployment \
+--resource-group {resource_group} \
+--template-uri "https://raw.githubusercontent.com/Azure/iotedge-vm-deploy/1.2.0/edgeDeploy.json" \
+--parameters dnsLabelPrefix='myedgevm' \
+--parameters adminUsername='azureuser' \
+--parameters deviceConnectionString=$(az iot hub device-identity connection-string show --device-id myEdgeDevice --hub-name {hub_name} -o tsv) \
+--parameters authenticationType='password' \
+--parameters adminPasswordOrKey="<PASSWORD_FOR_azureuser>"
 ```
 
 If successful, SSH into your device / VM using the 'azureuser' username and run:
@@ -102,16 +115,16 @@ sudo chmod 777 -R /influxdata
 Next, open a port for the Grafana dashboards. The default Grafana port is 3000:
 
 > [!NOTE]
-> This is not required in a production environment / using real devices, as any "offline" clients will probably be on the same network as the IoT Edge box. This is only required if using a VM in Azure.
+> This is not required in a production environment / using real devices, as any "offline" clients will probably be on the same network as the IoT Edge box. This is only required if using a VM in Azure. We apply rule to subnet because there's already a subnet created above with the edge VM.
 
 ```bash
-az vm open-port --resource-group {resource group} --name {edge vm name} --port 3000
+az vm open-port --resource-group {resource group} --name {edge vm name} --apply-to-subnet --port 3000 --priority 200
 ```
 
-Depending on the Azure environment it might be required to add a rule to the subnet as well:
+Finally set the tag for dashboarding:
 
 ```bash
-az vm open-port --resource-group {resource group} --name {edge vm name} --apply-to-subnet --port 3000
+az iot hub device-twin update --device-id myEdgeDevice  --hub-name offlinedashboardsv1hub  --set tags='{"dashboard": true}'
 ```
 
 You can now return to the [dashboarding sample](dashboarding-sample.md#deployment-of-the-sample) document to pick a deployment strategy.

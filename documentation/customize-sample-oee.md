@@ -395,6 +395,11 @@ Here are a few tips creating JSON messages:
 * `"tags"` are values that describe the metric, for example to identify or locate the asset. Use this flow to further contextualize the data by accessing other LOB systems and merging data into same tuple as a tag.
 * Use the `timestamp` value from the source OPC Server or create a separate value, according to your use case.
 
-#### Modifying the dashboard: Site Level Performance
+#### Modifying dashboards
 
 When changing data fields, the dashboard and all panels need to be re-designed and the respective queries modified. See [Manufacturing KPIs](/documentation/manufacturing-kpis.md) for a guidance on how the dashboards are built.
+
+
+#### Queries used in dashboards
+
+See [flux query reference](./documentation/flux-query-reference.md) for more information on queries used in dashboards.

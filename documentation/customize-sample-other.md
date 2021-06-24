@@ -84,3 +84,7 @@ Note that our sample dashboards and InfluxDB use the `flux` plug-in and query la
 When developing new dashboard(s), put them in the [dashboards](/modules/grafana/grafana-provisioning) folder. The built-in Grafana provisioning process will pick up all artifacts from there, as well as any additional data sources from the [datasource.yaml](/modules/grafana/grafana-provisioning/datasources/datasource.yml) file.
 
 Rebuild and redeploy all the containers after any change via your chosen deployment method.
+
+#### Queries used in dashboards
+
+See [flux query reference](./documentation/flux-query-reference.md) for more information on queries used in dashboards.

@@ -8,7 +8,8 @@ trigger:
     - readme.md
     - documentation/*
     - media/*
-
+pool:
+  vmImage: ubuntu-18.04
 pr:
   autoCancel: true
 
