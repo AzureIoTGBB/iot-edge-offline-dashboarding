@@ -1,5 +1,5 @@
 # start with standard public influx image
-FROM influxdb:1.7.11
+FROM influxdb:1.8.2
 
 # copy in our database initialization script
 # creates telemetry database and sets retention policy
