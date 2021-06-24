@@ -87,4 +87,4 @@ Rebuild and redeploy all the containers after any change via your chosen deploym
 
 #### Queries used in dashboards
 
-See [flux query reference](./documentation/flux-query-reference.md) for more information on queries used in dashboards.
+See [flux query reference](./flux-query-reference.md) for more information on queries used in dashboards.
